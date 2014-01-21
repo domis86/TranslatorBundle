@@ -1,0 +1,57 @@
+<style type="text/css">
+    #domis86_web_debug_dialog_table .untranslated_message td {
+        background-color: red;
+    }
+    #domis86_web_debug_dialog_container {
+        font-size: 11px;
+    }
+</style>
+
+{% spaceless %}
+<div id="domis86_web_debug_dialog_container"
+     class="dataTable"
+     style="display:none; background-color: burlywood;"
+     title="Messages in '{{ location.getBundleName }}&#92;{{ location.getControllerName }}::{{ location.getActionName }}'"
+     data-submit_url="{{ path('domis86_translator_save_message')|escape }}"
+     data-count_used_messages = "{{ webDebugDialog.countUsedMessages }}"
+     data-count_translated_messages = "{{ webDebugDialog.countTranslatedMessages }}"
+     data-count_untranslated_messages = "{{ webDebugDialog.countUntranslatedMessages }}"
+>
+{% endspaceless %}
+    <table id="domis86_web_debug_dialog_table" cellpadding="0" cellspacing="0" border="0">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Domain</th>
+                <th>Name</th>
+                {% for a_locale in webDebugDialog.managedLocales %}
+                <th>Translation {{ a_locale|upper }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% for aMessage in webDebugDialog.messagesForView %}
+            <tr class="{% if aMessage.is_translated==false %}untranslated_message{% endif %} message_{{ aMessage.id }}">
+                <td>{{ aMessage.id }}</td>
+                <td>{{ aMessage.domain_name }}</td>
+                <td>{{ aMessage.name }}</td>
+                {% for a_locale in webDebugDialog.managedLocales %}
+                <td data-debug="atd">
+                    <div data-debug="adiv" data-message_id="{{ aMessage.id }}" data-message_translation_locale="{{ a_locale }}" class="messageTranslationContainer" style="width: 100%; font-family: 'Courier New', Courier, monospace">{{ aMessage.translations[a_locale] }}</div>
+                </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    
+    </table>
+
+</div>
+
+<div id="domis86_web_debug_dialog_confirm_blur" title="Discard changes?" style="display: none;">
+    {# TODO: write better info here #}
+    <p>something.... Are you sure?</p>
+</div>

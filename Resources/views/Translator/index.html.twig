@@ -1,0 +1,21 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+
+<br />
+"i_dont_exist", lang "fr": {{ exampleTranslations.0 }}<br />
+"test_message_1", lang "fr": {{ exampleTranslations.1 }}<br />
+"test_message_1", lang "en": {{ exampleTranslations.2 }}<br />
+"i_dont_exist_too", lang "en": {{ exampleTranslations.3 }}<br />
+"i_exists_only_in_en", lang "fr": {{ exampleTranslations.4 }}<br />
+{{ exampleTranslations.5 }}<br />
+{{ exampleTranslations.6 }}<br />
+
+{{ 'test26'|trans }}
+
+{{ 'test26'|trans }}
+{{ 'test27'|trans }}
+
+{{ 'test28'|trans }}
+
+{% endblock %}
