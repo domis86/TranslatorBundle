@@ -1,4 +1,4 @@
-Domis86/TranslatorBundle
+domis86/TranslatorBundle
 ========================
 
 ...
