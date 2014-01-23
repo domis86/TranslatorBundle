@@ -14,6 +14,6 @@ The Symfony2 WebDebugPanel shows number of translations used in current request:
 
 ![Symfony2 Panel](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/web_debug_panel_1.png)
 
-If you click on this you can edit all translations used in current request and edit them in dialog (jQuery-ui + dataTables).
+If you click on this you can see translations used in current request and edit them in dialog (jQuery-ui + dataTables).
 
 ![Symfony2 Edit Dialog](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/web_debug_panel_2.png)
