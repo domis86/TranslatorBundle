@@ -15,7 +15,7 @@
             <span>[Click to edit translations in dialog]</span>
         </div>
         
-        {{ render(controller('Domis86TranslatorBundle:Translator:webDebugDialog', { 'location': collector.location })) }}
+        {{ render(controller('domis86_translator.controller.translator_controller:webDebugDialogAction', { 'location': collector.location })) }}
     {% endset %}
     {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': false } %}
 {% endblock %}

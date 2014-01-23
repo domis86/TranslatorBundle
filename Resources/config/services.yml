@@ -1,5 +1,6 @@
 parameters:
     domis86_translator.translator.class: Domis86\TranslatorBundle\Translation\Translator
+    domis86_translator.controller.translator_controller.class: Domis86\TranslatorBundle\Controller\TranslatorController
 
 services:
     domis86_translator.translator:
@@ -48,5 +49,10 @@ services:
         arguments: [@domis86_translator.message_manager]
         tags:
             - { name: data_collector, template: "Domis86TranslatorBundle:DataCollector:translatorDataCollector", id: "domis86_translator_data_collector" }
+
+    domis86_translator.controller.translator_controller:
+        class: %domis86_translator.controller.translator_controller.class%
+        arguments: [@templating, @domis86_translator.message_manager, @domis86_translator.web_debug_dialog, @translator]
+
 
 # TODO: mark some services as private
