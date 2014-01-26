@@ -1,0 +1,16 @@
+{% extends 'Domis86TranslatorBundle::base.html.twig' %}
+
+{% block title %}Edit All Messages - Backend - Domis86TranslatorBundle - {% endblock %}
+
+{% block content %}
+    <div class="domis86_translator_data_collector_icon_text domis86_translator_data_collector_clickable"
+         style="font-size: 2.0em;">translations
+    </div>
+
+    {% include 'Domis86TranslatorBundle:Translator:webDebugDialog.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/domis86translator/js/loadWebDebugDialog.js') }}"></script>
+{% endblock %}

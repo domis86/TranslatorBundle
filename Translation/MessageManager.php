@@ -93,6 +93,14 @@ class MessageManager
     }
 
     /**
+     * @return LocationVO
+     */
+    public static function getLocationOfBackendAction()
+    {
+        return new LocationVO('Domis86\\TranslatorBundle', 'Controller\\TranslatorController', 'backendAction');
+    }
+
+    /**
      * Add missing objects to Storage and update cache if necessary
      */
     public function handleMissingObjects()

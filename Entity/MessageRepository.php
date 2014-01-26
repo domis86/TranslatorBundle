@@ -58,4 +58,21 @@ class MessageRepository extends EntityRepository
         }
         return $result;
     }
+
+    /**
+     * @return array Array of Messages
+     */
+    public function loadAll()
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->addSelect(array('d', 'mt'))
+            ->innerJoin('m.domain', 'd')
+            ->leftJoin('m.translations', 'mt');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        if (empty($result)) {
+            return array();
+        }
+        return $result;
+    }
 }

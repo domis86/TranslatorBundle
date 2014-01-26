@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Domis86TranslatorBundle{% endblock %}</title>
+        {% block stylesheets %}
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />{# TODO: add favicon.ico #}
+    </head>
+    <body>
+        {% block body %}
+            {% block content %}
+
+
+            {% endblock %}
+
+        {% endblock %}
+
+        {% block javascripts %}
+        {% endblock %}
+    </body>
+</html>

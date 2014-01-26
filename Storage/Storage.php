@@ -61,6 +61,14 @@ class Storage implements StorageInterface
     }
 
     /**
+     * @return array
+     */
+    public function loadAllMessages()
+    {
+        return $this->getMessageRepository()->loadAll();
+    }
+
+    /**
      * @param string LocationVO $location
      * @return MessageCollection
      */
@@ -209,4 +217,5 @@ class Storage implements StorageInterface
     {
         return $this->entityManager->getRepository("Domis86TranslatorBundle:MessageLocation");
     }
+
 }

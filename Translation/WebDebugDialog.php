@@ -30,10 +30,32 @@ class WebDebugDialog
         $this->parentTranslator = $parentTranslator;
     }
 
-    public function getData(LocationVO $location)
+    /**
+     * @param LocationVO $location
+     * @return array
+     */
+    public function getDataForLocation(LocationVO $location)
+    {
+        $messages = $this->storage->loadMessagesForLocation($location);
+        return $this->parseDataForView($messages);
+    }
+
+    /**
+     * @return array
+     */
+    public function getDataForBackend()
+    {
+        $messages = $this->storage->loadAllMessages();
+        return $this->parseDataForView($messages);
+    }
+
+    /**
+     * @param $messages
+     * @return array
+     */
+    private function parseDataForView($messages)
     {
         $managedLocales = $this->messageManager->getManagedLocales();
-        $messages = $this->storage->loadMessagesForLocation($location);
 
         $messagesForView = array(); // TODO: implement as data object?
         foreach ($messages as $message) {

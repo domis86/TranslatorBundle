@@ -14,12 +14,15 @@
     {% endset %}
     {% set text %}
     <div class="sf-toolbar-info-piece domis86_translator_data_collector_clickable">
-        {# TODO: support Profiler view #}
+        {# TODO: support Profiler view? #}
         {# TODO: add some info here (about translated/untranslated messages etc) #}
-        <span>[Click to edit translations in dialog]</span>
+        <span>[Click to edit translations]</span>
     </div>
 
-    {{ render(controller('domis86_translator.controller.translator_controller:webDebugDialogAction', { 'location': collector.location })) }}
+    {% if not collector.backendMode %}
+        {{ render(controller('domis86_translator.controller.translator_controller:webDebugDialogAction', { 'location': collector.location })) }}
+    {% endif %}
+    
     {% endset %}
     {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': false } %}
 {% endblock %}

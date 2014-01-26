@@ -65,14 +65,23 @@ function Domis86WebDebugDialogLoaderClass() {
     }
 
     this.tryToInitTranslatorDataCollector = function () {
-        var isToolbarLoaded = (jQuery('.domis86_web_debug_dialog_toolbar_icon_img_edit').length > 0);
-        var isDialogContainerLoaded = (jQuery('#domis86_web_debug_dialog_container').length > 0);
+        var domis86_web_debug_dialog_container = jQuery('#domis86_web_debug_dialog_container');
+        var isToolbarLoaded = false;
+        var isDialogContainerLoaded = (domis86_web_debug_dialog_container.length > 0);
 
-        if (this.isJQueryUILoaded && this.isDataTablesLoaded && this.isJeditableLoaded && isToolbarLoaded && isDialogContainerLoaded) {
-            // everything is loaded --> go!
-            var domis86WebDebugDialog = new Domis86WebDebugDialogClass();
-            domis86WebDebugDialog.prepare();
-            return true;
+        if (isDialogContainerLoaded && this.isJQueryUILoaded && this.isDataTablesLoaded && this.isJeditableLoaded) {
+            var backendMode = false;
+            if ('on' === domis86_web_debug_dialog_container.data('backend_mode')) {
+                backendMode = true;
+            }
+
+            isToolbarLoaded = (jQuery('.domis86_web_debug_dialog_toolbar_icon_img_edit').length > 0);
+            if (isToolbarLoaded || backendMode) {
+                // everything is loaded --> go!
+                var domis86WebDebugDialog = new Domis86WebDebugDialogClass(backendMode);
+                domis86WebDebugDialog.prepare();
+                return true;
+            }
         }
 
         consoleLog('Domis86WebDebugDialog requirements are not loaded yet...');

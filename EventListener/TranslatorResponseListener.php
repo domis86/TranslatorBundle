@@ -43,10 +43,18 @@ class TranslatorResponseListener
         if (!$this->isWebDebugDialogEnabled) {
             return;
         }
+
+        // TODO: add list of ignored locations?
+        $location = $this->messageManager->getLocationOfMessages();
+        if ($location->isEqualTo($this->messageManager->getLocationOfBackendAction())) {
+            return;
+        }
+
 // TODO: decide if this should try inject Domis86WebDebugDialog only in MASTER_REQUEST
 //        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
 //            return;
 //        }
+
         $this->injectJavascriptToResponse($event->getResponse());
     }
 
@@ -81,7 +89,7 @@ class TranslatorResponseListener
 
         // do inject
         $jsUrl = $this->templatingHelperAssets->getUrl('bundles/domis86translator/js/loadWebDebugDialog.js');
-        $jsScript = '<script type="text/javascript" src=' . $jsUrl . '></script>';
+        $jsScript = '<script type="text/javascript" src="' . $jsUrl . '"></script>';
         $content = $substrFunction($content, 0, $pos) . $jsScript . $substrFunction($content, $pos);
         $response->setContent($content);
         $response->headers->set('Domis86TranslatorDialog-Token', 1);

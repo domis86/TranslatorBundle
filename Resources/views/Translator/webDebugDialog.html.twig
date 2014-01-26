@@ -1,3 +1,9 @@
+{% if backendMode %}
+    {% set title = 'All Messages' %}
+{% else %}
+    {% set title = "Messages in '" ~ location.getBundleName ~ "&#92;" ~ location.getControllerName ~ "::" ~ location.getActionName ~ "'" %}
+{% endif %}
+
 <style type="text/css">
     .domis86_web_debug_dialog_table td.is_not_translated, #domis86_help_dialog .is_not_translated {
         background-color: red !important;
@@ -44,7 +50,8 @@
 <div id="domis86_web_debug_dialog_container"
      class="dataTable"
      style="display:none; background-color: burlywood;"
-     title="Messages in '{{ location.getBundleName }}&#92;{{ location.getControllerName }}::{{ location.getActionName }}'"
+     title="{{ title|raw }}"
+     data-backend_mode="{% if backendMode %}on{% else %}off{% endif %}"
      data-submit_url="{{ path('domis86_translator_translator_save_message')|escape }}"
         >
     {% endspaceless %}
@@ -86,14 +93,23 @@
 
 </div>
 
-<div id="domis86_help_dialog" title="Help" style="display: none;">
+<div id="domis86_help_dialog" title="Help - Domis86TranslatorBundle" style="display: none;">
     <p>
         <span class="is_not_translated translation_font">&nbsp;&nbsp;&nbsp;&nbsp;Some text&nbsp;&nbsp;&nbsp;</span> - is
         not translated.
     </p>
 
+    <hr />
+
     <p>
         "<span class="parent_translation_style translation_font">Lorem ipsum dolor.</span>" - Translation from original
         Translator service - used when there is no translation in the database.
     </p>
+
+    <hr />
+
+    <p>
+        Click on table headers to sort by column. Shift+Click for multi column sorting.
+    </p>
+    {# TODO: Add used plugins/bundles info (dataTables etc). Add help for usage of dataTables? #}
 </div>

@@ -1,33 +1,50 @@
-function Domis86WebDebugDialogClass() {
+function Domis86WebDebugDialogClass(aBackendMode) {
     var that = this;
 
+    var backendMode = aBackendMode;
     var isInitialized = false;
     var countMessages = 0;
     var countMessagesTranslated = 0;
 
     this.prepare = function () {
-        jQuery('.domis86_translator_data_collector_clickable').click(function (event) {
+        updateTranslatorDataCollectorIconText();
+
+        if (backendMode) {
+            jQuery("#domis86_web_debug_dialog_container").show();
+            this.showDomis86WebDebugDialog();
+        }
+
+        var clickable = jQuery('.domis86_translator_data_collector_clickable');
+        if (backendMode) {
+            clickable.click(function (event) {
+                event.preventDefault();
+                showHelpDialog();
+            });
+            return;
+        }
+        clickable.click(function (event) {
             event.preventDefault();
             that.showDomis86WebDebugDialog();
         });
-        updateTranslatorDataCollectorIconText();
     };
 
     this.showDomis86WebDebugDialog = function () {
-        jQuery("#domis86_web_debug_dialog_container").dialog({
-            modal: true,
-            autoOpen: true,
-            buttons: {
-                "Help": function () {
-                    showHelpDialog();
+        if (!backendMode) {
+            jQuery("#domis86_web_debug_dialog_container").dialog({
+                modal: true,
+                autoOpen: true,
+                buttons: {
+                    "Help": function () {
+                        showHelpDialog();
+                    },
+                    "Close": function () {
+                        jQuery(this).dialog("close");
+                    }
                 },
-                "Close": function () {
-                    jQuery(this).dialog("close");
-                }
-            },
-            width: 1000,
-            height: 500
-        });
+                width: 1000,
+                height: 500
+            });
+        }
 
         if (!isInitialized) {
             initDomis86WebDebugDialog();
@@ -40,7 +57,8 @@ function Domis86WebDebugDialogClass() {
         var tableWebDebugDialog = jQuery('table.domis86_web_debug_dialog_table').dataTable({
             "sScrollY": "300px",
             "bPaginate": false,
-            "bScrollCollapse": false
+            "bScrollCollapse": false,
+            "aaSorting": [ [1,'asc'], [2,'asc'] ]
         });
 
         // Apply the jEditable handlers to the table
@@ -118,6 +136,8 @@ function Domis86WebDebugDialogClass() {
                 if (!isLocaleTranslated) {
                     isMessageTranslated = false;
                     jQuery(this).addClass('is_not_translated');
+                } else {
+                    jQuery(this).removeClass('is_not_translated');
                 }
             });
             if (isMessageTranslated) {
@@ -131,7 +151,11 @@ function Domis86WebDebugDialogClass() {
 
         // update icon and text in panel
         //var dialogContainer = jQuery('#domis86_web_debug_dialog_container');
-        jQuery('.domis86_translator_data_collector_icon_text').html(countMessagesTranslated + '/' + countMessages + ' translated');
+        var helpInfo = '';
+        if (backendMode) {
+            helpInfo = ' (Click for help)'
+        }
+        jQuery('.domis86_translator_data_collector_icon_text').html(countMessagesTranslated + '/' + countMessages + ' translated' + helpInfo);
         jQuery(".domis86_web_debug_dialog_toolbar_icon_img").hide();
         if (countMessagesTranslated === countMessages) {
             jQuery(".domis86_web_debug_dialog_toolbar_icon_img_warning").hide();
@@ -151,7 +175,7 @@ function Domis86WebDebugDialogClass() {
                 }
             },
             width: 400,
-            height: 250
+            height: 350
         });
     }
 }

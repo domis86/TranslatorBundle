@@ -39,6 +39,18 @@ class TranslatorDataCollector extends DataCollector
     }
 
     /**
+     * @return bool
+     */
+    public function getBackendMode()
+    {
+        if ($location = $this->data['location']) {
+            /** @var LocationVO $location */
+            return $location->isEqualTo(MessageManager::getLocationOfBackendAction());
+        }
+        return false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getName()

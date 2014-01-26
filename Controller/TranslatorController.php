@@ -61,10 +61,26 @@ class TranslatorController
     public function webDebugDialogAction(LocationVO $location)
     {
         return $this->templating->renderResponse(
-            'Domis86TranslatorBundle:DataCollector:webDebugDialog.html.twig',
+            'Domis86TranslatorBundle:Translator:webDebugDialog.html.twig',
             array(
-                'webDebugDialog' => $this->webDebugDialog->getData($location)
-            , 'location' => $location
+                'webDebugDialog' => $this->webDebugDialog->getDataForLocation($location),
+                'location' => $location,
+                'backendMode' => false
+            )
+        );
+    }
+
+    /**
+     * @return Response
+     */
+    public function backendAction()
+    {
+        // TODO: add security
+        return $this->templating->renderResponse(
+            'Domis86TranslatorBundle:Translator:backend.html.twig',
+            array(
+                'webDebugDialog' => $this->webDebugDialog->getDataForBackend(),
+                'backendMode' => true
             )
         );
     }
