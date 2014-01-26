@@ -37,10 +37,11 @@ class TranslatorController
     {
         // TODO: add security
 
-        $messageTranslation = $this->messageManager->saveMessageTranslationByMessageId(
-            $request->request->get('message_id'),
+        $messageTranslation = $this->messageManager->saveMessageTranslation(
+            $request->request->get('message_name'),
+            $request->request->get('message_domain_name'),
             $request->request->get('message_translation_locale'),
-            $request->request->get('value')
+            $request->request->get('message_translation')
         );
 
         $return = array();

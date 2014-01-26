@@ -17,7 +17,7 @@ class DomainRepository extends EntityRepository
         // TODO: convert to value object
         $objects = parent::findAll();
         $objects_by_name = array();
-        foreach ($objects as $key => $object)  {
+        foreach ($objects as $key => $object) {
             /** @var Domain $object */
             $objects_by_name[$object->getName()] = $objects[$key];
         }
@@ -30,6 +30,6 @@ class DomainRepository extends EntityRepository
      */
     public function findOneByName($name)
     {
-        return $this->findOneBy(array('name'=>$name));
+        return $this->findOneBy(array('name' => $name));
     }
 }

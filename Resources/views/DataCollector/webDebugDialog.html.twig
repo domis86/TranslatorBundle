@@ -1,9 +1,42 @@
 <style type="text/css">
-    #domis86_web_debug_dialog_table .untranslated_message td {
-        background-color: red;
+    .domis86_web_debug_dialog_table td.is_not_translated, #domis86_help_dialog .is_not_translated {
+        background-color: red !important;
     }
+
+    .domis86_web_debug_dialog_table .translation_font, #domis86_help_dialog .translation_font {
+        font-family: 'Courier New', Courier, monospace
+    }
+
+    .domis86_web_debug_dialog_table .messageTranslationContainer {
+        width: 100%;
+    }
+
+    .domis86_web_debug_dialog_table .messageParentTranslationContainer, #domis86_help_dialog .parent_translation_style {
+        color: #04a9e6;
+    }
+
+    .column_id {
+        width: 1%;
+    }
+
+    .column_domain_name {
+        width: 2%;
+    }
+
+    .column_name {
+        width: 10%;
+    }
+
     #domis86_web_debug_dialog_container {
         font-size: 11px;
+    }
+
+    #domis86_help_dialog {
+        font-size: 14px;
+    }
+
+    .ui-dialog-title {
+        font-size: 0.8em;
     }
 </style>
 
@@ -13,45 +46,54 @@
      style="display:none; background-color: burlywood;"
      title="Messages in '{{ location.getBundleName }}&#92;{{ location.getControllerName }}::{{ location.getActionName }}'"
      data-submit_url="{{ path('domis86_translator_translator_save_message')|escape }}"
-     data-count_used_messages = "{{ webDebugDialog.countUsedMessages }}"
-     data-count_translated_messages = "{{ webDebugDialog.countTranslatedMessages }}"
-     data-count_untranslated_messages = "{{ webDebugDialog.countUntranslatedMessages }}"
->
-{% endspaceless %}
-    <table id="domis86_web_debug_dialog_table" cellpadding="0" cellspacing="0" border="0">
+        >
+    {% endspaceless %}
+    <table class="domis86_web_debug_dialog_table" cellpadding="0" cellspacing="0" border="0">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>Domain</th>
-                <th>Name</th>
-                {% for a_locale in webDebugDialog.managedLocales %}
-                <th>Translation {{ a_locale|upper }}</th>
-                {% endfor %}
-            </tr>
+        <tr>
+            <th class="column_id">Id</th>
+            <th class="column_domain_name">Domain</th>
+            <th class="column_name">Name</th>
+            {% for a_locale in webDebugDialog.managedLocales %}
+                <th class="column_translation">Translation {{ a_locale|upper }}</th>
+            {% endfor %}
+        </tr>
         </thead>
 
         <tbody>
 
         {% for aMessage in webDebugDialog.messagesForView %}
-            <tr class="{% if aMessage.is_translated==false %}untranslated_message{% endif %} message_{{ aMessage.id }}">
-                <td>{{ aMessage.id }}</td>
-                <td>{{ aMessage.domain_name }}</td>
-                <td>{{ aMessage.name }}</td>
-                {% for a_locale in webDebugDialog.managedLocales %}
-                <td data-debug="atd">
-                    <div data-debug="adiv" data-message_id="{{ aMessage.id }}" data-message_translation_locale="{{ a_locale }}" class="messageTranslationContainer" style="width: 100%; font-family: 'Courier New', Courier, monospace">{{ aMessage.translations[a_locale] }}</div>
-                </td>
+            <tr class="row_message">
+                <td class="column_id td_first">{{ aMessage.id }}</td>
+                <td class="column_domain_name">{{ aMessage.domain_name }}</td>
+                <td class="column_name">{{ aMessage.name }}</td>
+                {% for aLocale, aTranslation in aMessage.translations %}
+                    <td class="column_translation translation_font {% if loop.last %}td_last{% endif %}"
+                        data-message_name="{{ aMessage.name }}"
+                        data-message_domain_name="{{ aMessage.domain_name }}"
+                        data-message_translation_locale="{{ aLocale }}">
+                        <div class="messageTranslationContainer isContainer {% if aTranslation|length < 1 %}empty{% else %}not_empty{% endif %}">{{ aTranslation }}</div>
+                        <div class="messageParentTranslationContainer isContainer {% if aMessage.parentTranslations[aLocale]|length < 1 %}empty{% else %}not_empty{% endif %}"
+                             title="Translation from original Translator service - used when there is no translation in database">{{ aMessage.parentTranslations[aLocale] }}</div>
+                    </td>
                 {% endfor %}
             </tr>
         {% endfor %}
 
         </tbody>
-    
+
     </table>
 
 </div>
 
-<div id="domis86_web_debug_dialog_confirm_blur" title="Discard changes?" style="display: none;">
-    {# TODO: write better info here #}
-    <p>something.... Are you sure?</p>
+<div id="domis86_help_dialog" title="Help" style="display: none;">
+    <p>
+        <span class="is_not_translated translation_font">&nbsp;&nbsp;&nbsp;&nbsp;Some text&nbsp;&nbsp;&nbsp;</span> - is
+        not translated.
+    </p>
+
+    <p>
+        "<span class="parent_translation_style translation_font">Lorem ipsum dolor.</span>" - Translation from original
+        Translator service - used when there is no translation in the database.
+    </p>
 </div>

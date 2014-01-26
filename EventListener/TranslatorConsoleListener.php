@@ -30,9 +30,9 @@ class TranslatorConsoleListener
     {
         $command = $event->getCommand();
 
-        $bundleName     = self::LOCATION_NOT_FOUND;
+        $bundleName = self::LOCATION_NOT_FOUND;
         $controllerName = self::LOCATION_NOT_FOUND;
-        $actionName     = $command->getName();
+        $actionName = $command->getName();
 
         $commandClassName = get_class($command);
         preg_match('/(.+[^\\\\]Bundle)\\\\(.+)/', $commandClassName, $matches);

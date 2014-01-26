@@ -59,17 +59,9 @@ class MessageManager
      */
     public function translateMessage($uncleanMessageName, $uncleanDomainName, $uncleanLocale, array $parameters = array())
     {
-        $locale = $this->determineLocale($uncleanLocale);
-        if ($locale === false) {
-            // invalid locale
-            return false;
-        }
-        $messageName = $this->determineMessageName($uncleanMessageName);
-        if ($messageName === false) {
-            // invalid (empty?) message name
-            return false;
-        }
-        $domainName = $this->determineDomainName($uncleanDomainName);
+        $names = $this->determineNames($uncleanMessageName, $uncleanDomainName, $uncleanLocale);
+        if ($names === false) return false;
+        list($messageName, $domainName, $locale) = $names;
 
         $translation = $this->tryToGetTranslationFromCollection($messageName, $domainName, $locale);
         if (!$translation) {
@@ -119,22 +111,38 @@ class MessageManager
     }
 
     /**
-     * @param $messageId
+     * @return array
+     */
+    public function getManagedLocales()
+    {
+        return $this->managedLocales;
+    }
+
+    /**
+     * @param string $uncleanMessageName
+     * @param string $uncleanDomainName
      * @param string $uncleanLocale
-     * @param string $translation
+     * @param string $uncleanTranslation
      * @return string|bool
      */
-    public function saveMessageTranslationByMessageId($messageId, $uncleanLocale, $translation)
+    public function saveMessageTranslation($uncleanMessageName, $uncleanDomainName, $uncleanLocale, $uncleanTranslation)
     {
-        $locale = $this->determineLocale($uncleanLocale);
-        if ($locale === false) {
-            // invalid locale
+        $names = $this->determineNames($uncleanMessageName, $uncleanDomainName, $uncleanLocale);
+        if ($names === false) return false;
+        list($messageName, $domainName, $locale) = $names;
+
+        $message = $this->storage->getMessage($messageName, $domainName);
+        if (!$message) {
             return false;
         }
-        $messageTranslation = $this->storage->saveMessageTranslation($messageId, $locale, $translation);
-        if (!$messageTranslation) {
-            return false;
+
+        $translation = $this->determineTranslation($uncleanTranslation);
+        if ($translation === false) {
+            $this->storage->removeMessageTranslation($message, $locale);
+            return '';
         }
+
+        $messageTranslation = $this->storage->saveMessageTranslation($message, $locale, $translation);
 
         // update cache for Locations of this Message
         $locations = $messageTranslation->getMessage()->getArrayOfLocationVOs();
@@ -143,14 +151,6 @@ class MessageManager
             $this->cacheManager->saveMessageCollectionForLocation($location, $messageCollection);
         }
         return $messageTranslation->getTranslation();
-    }
-
-    /**
-     * @return array
-     */
-    public function getManagedLocales()
-    {
-        return $this->managedLocales;
     }
 
     /**
@@ -189,7 +189,7 @@ class MessageManager
     private function determineLocale($uncleanLocale)
     {
         $locale = trim($uncleanLocale);
-        if (strlen($locale)<1) {
+        if (strlen($locale) < 1) {
             // return default locale
             return $this->managedLocales[0];
         }
@@ -207,7 +207,7 @@ class MessageManager
     private function determineDomainName($uncleanDomainName)
     {
         $domainName = trim($uncleanDomainName);
-        if (!$domainName || strlen($domainName) < 1) {
+        if (strlen($domainName) < 1) {
             return 'messages';
         }
         return $domainName;
@@ -220,11 +220,46 @@ class MessageManager
     private function determineMessageName($uncleanMessageName)
     {
         $messageName = trim($uncleanMessageName);
-        if (!$messageName || strlen($messageName) < 1) {
+        if (strlen($messageName) < 1) {
             // this Message name is not valid
             return false;
         }
         return $messageName;
+    }
+
+    /**
+     * @param $uncleanMessageName
+     * @param $uncleanDomainName
+     * @param $uncleanLocale
+     * @return array|bool
+     */
+    private function determineNames($uncleanMessageName, $uncleanDomainName, $uncleanLocale)
+    {
+        $locale = $this->determineLocale($uncleanLocale);
+        if ($locale === false) {
+            // invalid locale
+            return false;
+        }
+        $messageName = $this->determineMessageName($uncleanMessageName);
+        if ($messageName === false) {
+            // invalid (empty?) message name
+            return false;
+        }
+        $domainName = $this->determineDomainName($uncleanDomainName);
+        return array($messageName, $domainName, $locale);
+    }
+
+    /**
+     * @param string $uncleanTranslation
+     * @return string|bool Clean translation or false(bool)
+     */
+    private function determineTranslation($uncleanTranslation)
+    {
+        $translation = trim($uncleanTranslation);
+        if (strlen($translation) < 1) {
+            return false;
+        }
+        return $translation;
     }
 
     /**

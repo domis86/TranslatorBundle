@@ -18,7 +18,6 @@
         "doctrine/doctrine-bundle": "~1.2",
         "twig/extensions": "~1.0",
         "sensio/distribution-bundle": "~2.3",
-        "sensio/framework-extra-bundle": "~3.0",
         "sensio/generator-bundle": "~2.3"
     },
     "require-dev": {

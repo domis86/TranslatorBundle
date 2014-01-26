@@ -48,8 +48,7 @@ class Storage implements StorageInterface
      */
     public function getMessage($messageName, $domainName)
     {
-        $messageRepository = $this->getMessageRepository();
-        return $messageRepository->findOneByNameAndDomain($messageName, $domainName);
+        return $this->getMessageRepository()->findOneByNameAndDomain($messageName, $domainName);
     }
 
     /**
@@ -58,8 +57,7 @@ class Storage implements StorageInterface
      */
     public function loadMessagesForLocation(LocationVO $location)
     {
-        $messageRepository = $this->getMessageRepository();
-        return $messageRepository->loadByLocation($location);
+        return $this->getMessageRepository()->loadByLocation($location);
     }
 
     /**
@@ -77,19 +75,13 @@ class Storage implements StorageInterface
     }
 
     /**
-     * @param $messageId
+     * @param Message $message
      * @param string $locale
      * @param string $translation
-     * @return MessageTranslation|bool
+     * @return MessageTranslation
      */
-    public function saveMessageTranslation($messageId, $locale, $translation)
+    public function saveMessageTranslation(Message $message, $locale, $translation)
     {
-        $messageRepository = $this->getMessageRepository();
-        /** @var Message $message */
-        $message = $messageRepository->find($messageId);
-        if (!$message) {
-            return false;
-        }
         $messageTranslation = $message->getTranslationForLocale($locale);
         if (!$messageTranslation) {
             $messageTranslation = new MessageTranslation();
@@ -102,6 +94,21 @@ class Storage implements StorageInterface
         $messageTranslation->setTranslation($translation);
         $this->entityManager->flush();
         return $messageTranslation;
+    }
+
+    /**
+     * @param Message $message
+     * @param string $locale
+     */
+    public function removeMessageTranslation(Message $message, $locale)
+    {
+        $messageTranslation = $message->getTranslationForLocale($locale);
+        if (!$messageTranslation) {
+            return;
+        }
+        $message->removeTranslation($messageTranslation);
+        $this->entityManager->remove($messageTranslation);
+        $this->entityManager->flush();
     }
 
     /**

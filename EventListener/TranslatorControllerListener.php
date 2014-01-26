@@ -31,9 +31,9 @@ class TranslatorControllerListener
             return;
         }
 
-        $bundleName     = self::LOCATION_NOT_FOUND;
+        $bundleName = self::LOCATION_NOT_FOUND;
         $controllerName = self::LOCATION_NOT_FOUND;
-        $actionName     = self::LOCATION_NOT_FOUND;
+        $actionName = self::LOCATION_NOT_FOUND;
 
         $controller = $event->getController();
 

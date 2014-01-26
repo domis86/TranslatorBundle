@@ -19,7 +19,7 @@ class TranslatorCompilerPass implements CompilerPassInterface
 
         if ($container->hasAlias('translator')) {
             // original translator is an alias.
-            $originalTranslatorAlias = new Alias((string) $container->getAlias('translator'), false);
+            $originalTranslatorAlias = new Alias((string)$container->getAlias('translator'), false);
             $container->setAlias('domis86_translator.translator.parent', $originalTranslatorAlias);
         } else {
             // original translator is a definition.

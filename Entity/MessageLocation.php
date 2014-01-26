@@ -121,7 +121,7 @@ class MessageLocation
     /**
      * Get message_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getMessageId()
     {
@@ -144,7 +144,7 @@ class MessageLocation
     /**
      * Get bundle
      *
-     * @return string 
+     * @return string
      */
     public function getBundle()
     {
@@ -167,7 +167,7 @@ class MessageLocation
     /**
      * Get controller
      *
-     * @return string 
+     * @return string
      */
     public function getController()
     {
@@ -190,7 +190,7 @@ class MessageLocation
     /**
      * Get action
      *
-     * @return string 
+     * @return string
      */
     public function getAction()
     {
@@ -213,7 +213,7 @@ class MessageLocation
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -236,7 +236,7 @@ class MessageLocation
     /**
      * Get updated_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {

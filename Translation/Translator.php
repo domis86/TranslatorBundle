@@ -35,7 +35,7 @@ class Translator implements TranslatorInterface
         if (!$locale) {
             $locale = $this->getLocale();
         }
-        if ($translation = $this->messageManager->translateMessage($id, $domain, $locale, $parameters)){
+        if ($translation = $this->messageManager->translateMessage($id, $domain, $locale, $parameters)) {
             return $translation;
         }
         return $this->parentTranslator->trans($id, $parameters, $domain, $locale);

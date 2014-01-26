@@ -20,9 +20,9 @@ class MessageLocationRepository extends EntityRepository
         //my_log("findOneByMessageAndLocationVO({$message->getId()}, {$locationOfMessages->getBundleName()}, {$locationOfMessages->getControllerName()}, {$locationOfMessages->getActionName()})");
         return $this->findOneBy(array(
             'message_id' => $message->getId()
-            , 'bundle' => $locationOfMessages->getBundleName()
-            , 'controller' => $locationOfMessages->getControllerName()
-            , 'action' => $locationOfMessages->getActionName()
+        , 'bundle' => $locationOfMessages->getBundleName()
+        , 'controller' => $locationOfMessages->getControllerName()
+        , 'action' => $locationOfMessages->getActionName()
         ));
     }
 }

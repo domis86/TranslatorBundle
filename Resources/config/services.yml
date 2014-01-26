@@ -3,23 +3,49 @@ parameters:
     domis86_translator.controller.translator_controller.class: Domis86\TranslatorBundle\Controller\TranslatorController
 
 services:
+
+# public
+
     domis86_translator.translator:
-        class: %domis86_translator.translator.class%
+        class: '%domis86_translator.translator.class%'
         arguments: [@domis86_translator.translator.parent, @domis86_translator.message_manager]
+
+    domis86_translator.controller.translator_controller:
+        class: '%domis86_translator.controller.translator_controller.class%'
+        arguments: [@templating, @domis86_translator.message_manager, @domis86_translator.web_debug_dialog, @translator]
+
+# private
+
     domis86_translator.message_manager:
+
         class: Domis86\TranslatorBundle\Translation\MessageManager
         arguments:
             - @domis86_translator.storage
             - @domis86_translator.cache_manager
             - %domis86_translator.managed_locales%
     domis86_translator.cache_manager:
+
         class: Domis86\TranslatorBundle\Translation\CacheManager
         arguments:
             - %kernel.cache_dir%/domis86translator
             - %kernel.debug%
     domis86_translator.storage:
+
         class: Domis86\TranslatorBundle\Storage\Storage
         arguments: [@doctrine.orm.entity_manager]
+
+    domis86_translator.web_debug_dialog:
+
+        class: Domis86\TranslatorBundle\Translation\WebDebugDialog
+        arguments: [@domis86_translator.storage, @domis86_translator.message_manager, @domis86_translator.translator.parent]
+
+    domis86_translator.data_collector:
+        class: Domis86\TranslatorBundle\DataCollector\TranslatorDataCollector
+        arguments: [@domis86_translator.message_manager]
+        tags:
+            - { name: data_collector, template: "Domis86TranslatorBundle:DataCollector:translatorDataCollector", id: "domis86_translator_data_collector" }
+
+# listeners
 
     domis86_translator.controller_listener:
         class: Domis86\TranslatorBundle\EventListener\TranslatorControllerListener
@@ -39,20 +65,3 @@ services:
         tags:
             - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 16 }
             - { name: kernel.event_listener, event: console.terminate, method: onConsoleTerminate, priority: -64 }
-
-    domis86_translator.web_debug_dialog:
-        class: Domis86\TranslatorBundle\Translation\WebDebugDialog
-        arguments: [@domis86_translator.storage, @domis86_translator.message_manager]
-
-    domis86_translator.data_collector:
-        class: Domis86\TranslatorBundle\DataCollector\TranslatorDataCollector
-        arguments: [@domis86_translator.message_manager]
-        tags:
-            - { name: data_collector, template: "Domis86TranslatorBundle:DataCollector:translatorDataCollector", id: "domis86_translator_data_collector" }
-
-    domis86_translator.controller.translator_controller:
-        class: %domis86_translator.controller.translator_controller.class%
-        arguments: [@templating, @domis86_translator.message_manager, @domis86_translator.web_debug_dialog, @translator]
-
-
-# TODO: mark some services as private
