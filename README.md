@@ -14,11 +14,11 @@ The Symfony2 WebDebugToolbar shows number of translations used in current reques
 If you click on it a Edit Dialog will appear where you can edit translations used in current request:
 ![Domis86Translator Edit Dialog](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/domis86translator_edit_dialog.png)
 
-![Tranlation missing](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/translation_missing.png) - indicates that translations for this language is missing - click and add it!
+![Tranlation missing](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/translation_missing.png) - indicates that translation for this language is missing - click and add it!
 
-![Tranlation missing](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/translation_from_file.png) - blue color means that it is translation loaded from file - via default Symfony2 Translator service (messages.en.yml etc). It will be used if there is no translation in DB.
+![Tranlation missing](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/translation_from_file.png) - Black text is current translation stored in db. Blue text means that it is translation loaded from file - via default Symfony2 Translator service (messages.en.yml etc). It will be used if there is no translation in DB.
 
-In this example `hello` is translated to `Hallo` when locale is german, but when locale is french then it is translated to `Bonjour` (which resides somewhere in messages.fr.yml). Hit `( Click to edit )` above `Bonjour` to change it.
+In this example `hello` is translated to `Hallo` when language is ![german](https://raw2.github.com/domis86/TranslatorBundle/master/Resources/public/images/flags/de.png)german, but when language is ![french](https://raw2.github.com/domis86/TranslatorBundle/master/Resources/public/images/flags/fr.png)french then it is translated to `Bonjour` (which resides somewhere in messages.fr.yml). Hit `( Click to edit )` above `Bonjour` to change it.
 
 
 You can also browse `[your_domain.com]/trans/backend` to edit all translations used in your application.
@@ -34,7 +34,6 @@ You can also browse `[your_domain.com]/trans/backend` to edit all translations u
     * click on `Help` button in Dialog for more info
 * manage all translations from you application in Backend (same features as Edit Dialog)
 * translations are stored in DB, and cached per Action
-* simple installation
 
 
 ## Installation
