@@ -90,8 +90,10 @@ class TranslatorController
         $exampleTranslations = array();
         $exampleTranslations['hello']['fr'] = $this->translator->trans('hello', array(), 'messages', 'fr');
         $exampleTranslations['hello']['en'] = $this->translator->trans('hello', array(), 'messages', 'en');
+        $exampleTranslations['hello']['de'] = $this->translator->trans('hello', array(), 'messages', 'de');
         $exampleTranslations['beer']['fr'] = $this->translator->trans('beer', array(), 'messages', 'fr');
         $exampleTranslations['beer']['en'] = $this->translator->trans('beer', array(), 'messages', 'en');
+        $exampleTranslations['beer']['de'] = $this->translator->trans('beer', array(), 'messages', 'de');
         $exampleTranslations['some info']['fr'] = $this->translator->trans('some info', array(), 'infos', 'fr');
         $exampleTranslations['some info']['en'] = $this->translator->trans('some info', array(), 'infos', 'en');
 

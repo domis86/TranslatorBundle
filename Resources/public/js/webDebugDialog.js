@@ -150,7 +150,6 @@ function Domis86WebDebugDialogClass(aBackendMode) {
         });
 
         // update icon and text in panel
-        //var dialogContainer = jQuery('#domis86_web_debug_dialog_container');
         var helpInfo = '';
         if (backendMode) {
             helpInfo = ' (Click for help)'
