@@ -8,7 +8,7 @@ function Domis86WebDebugDialogLoaderClass() {
     this.startInit = function () {
         yepnope({
             test: (typeof jQuery !== 'undefined'),
-            nope: '/bundles/domis86translator/js/external/jquery-2.0.3.min.js',
+            nope: document.getElementById('domis86_data_for_loadwebdebugdialogjs').getAttribute("data-asset_jquery_url"),
             complete: function () {
                 consoleLog('jQuery loaded!');
                 jQuery(document).ready(function () {
@@ -24,10 +24,12 @@ function Domis86WebDebugDialogLoaderClass() {
         // Now we load libraries if necessary
         // They are loaded asynchronously, so its potentially faster than loading "one after another"
 
+        var assets = jQuery('#domis86_data_for_loadwebdebugdialogjs');
+
         that.isJQueryUILoaded = (typeof jQuery.ui !== 'undefined');
         yepnope({
             test: that.isJQueryUILoaded,
-            nope: ['/bundles/domis86translator/css/jquery-ui.1.10.3.css', '/bundles/domis86translator/js/external/jquery-ui.1.10.3.min.js'],
+            nope: [assets.data('asset_jquery_ui_css_url'), assets.data('asset_jquery_ui_url')],
             complete: function () {
                 that.isJQueryUILoaded = true;
                 consoleLog('jQueryUI loaded!');
@@ -37,7 +39,7 @@ function Domis86WebDebugDialogLoaderClass() {
         that.isDataTablesLoaded = (typeof jQuery.fn.DataTable !== 'undefined');
         yepnope({
             test: that.isDataTablesLoaded,
-            nope: ['/bundles/domis86translator/css/jquery.dataTables.css', '/bundles/domis86translator/js/external/jquery.dataTables.1.10.0-dev.min.js'],
+            nope: [assets.data('asset_datatables_css_url'), assets.data('asset_datatables_url')],
             complete: function () {
                 that.isDataTablesLoaded = true;
                 consoleLog('DataTables loaded!');
@@ -47,7 +49,7 @@ function Domis86WebDebugDialogLoaderClass() {
         that.isJeditableLoaded = (typeof jQuery.fn.editable !== 'undefined');
         yepnope({
             test: that.isJeditableLoaded,
-            nope: ['/bundles/domis86translator/js/external/jquery.jeditable.mini.js'],
+            nope: [assets.data('asset_jeditable_url')],
             complete: function () {
                 that.isJeditableLoaded = true;
                 consoleLog('Jeditable loaded!!');
@@ -56,7 +58,7 @@ function Domis86WebDebugDialogLoaderClass() {
 
         yepnope({
             test: false,
-            nope: ['/bundles/domis86translator/js/webDebugDialog.js'],
+            nope: [assets.data('asset_webdebugdialog_url')],
             complete: function () {
                 consoleLog('webDebugDialog.js loaded!!');
                 that.tryToInitTranslatorDataCollector();

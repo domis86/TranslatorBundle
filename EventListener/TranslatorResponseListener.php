@@ -87,10 +87,29 @@ class TranslatorResponseListener
             return;
         }
 
-        // do inject
+        // prepare inject
+        // TODO: Get assets from config. Create template and render here.
+        $assets = array(
+            'asset_jquery_url'         => '/bundles/domis86translator/js/external/jquery-2.0.3.min.js',
+            'asset_jquery_ui_url'      => '/bundles/domis86translator/js/external/jquery-ui.1.10.3.min.js',
+            'asset_jquery_ui_css_url'  => '/bundles/domis86translator/css/jquery-ui.1.10.3.css',
+            'asset_datatables_url'     => '/bundles/domis86translator/js/external/jquery.dataTables.1.10.0-dev.min.js',
+            'asset_datatables_css_url' => '/bundles/domis86translator/css/jquery.dataTables.css',
+            'asset_jeditable_url'      => '/bundles/domis86translator/js/external/jquery.jeditable.mini.js',
+            'asset_webdebugdialog_url' => '/bundles/domis86translator/js/webDebugDialog.js'
+        );
+
+        $html = '<span id="domis86_data_for_loadwebdebugdialogjs" style="display:none;"';
+        foreach ($assets as $name=>$asset) {
+            $assetUrl = $this->templatingHelperAssets->getUrl($asset);
+            $html .= ' data-' . $name . '="' . $assetUrl . '"';
+        }
+        $html .= '></span>';
         $jsUrl = $this->templatingHelperAssets->getUrl('bundles/domis86translator/js/loadWebDebugDialog.js');
-        $jsScript = '<script type="text/javascript" src="' . $jsUrl . '"></script>';
-        $content = $substrFunction($content, 0, $pos) . $jsScript . $substrFunction($content, $pos);
+        $html .= '<script type="text/javascript" src="' . $jsUrl . '"></script>';
+
+        // do inject
+        $content = $substrFunction($content, 0, $pos) . $html . $substrFunction($content, $pos);
         $response->setContent($content);
         $response->headers->set('Domis86TranslatorDialog-Token', 1);
     }
