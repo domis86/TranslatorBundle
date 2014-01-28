@@ -24,8 +24,8 @@
         "symfony/framework-bundle": ">=2.3"
     },
     "autoload": {
-        "psr-0": { "domis86\\TranslatorBundle\\": "" }
+        "psr-0": { "Domis86\\TranslatorBundle\\": "" }
     },
     "minimum-stability": "dev",
-    "target-dir": "domis86/TranslatorBundle"
+    "target-dir": "domis86"
 }
