@@ -26,6 +26,6 @@
     "autoload": {
         "psr-0": { "Domis86\\TranslatorBundle\\": "" }
     },
-    "minimum-stability": "dev",
-    "target-dir": "domis86"
+    "target-dir": "Domis86/TranslatorBundle",
+    "minimum-stability": "dev"
 }
