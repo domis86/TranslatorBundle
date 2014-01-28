@@ -78,6 +78,11 @@ domis86_translator_routing:
     prefix:   /trans
 ```
 
+Update your database:
+
+```
+php app/console doctrine:schema:update --force
+```
 
 ## Used libraries:
 
