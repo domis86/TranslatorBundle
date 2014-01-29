@@ -47,7 +47,7 @@ class TranslatorConsoleListener
 
     public function onConsoleTerminate(ConsoleTerminateEvent $event)
     {
-        $command = $event->getCommand();
+        //$command = $event->getCommand();
         $this->messageManager->handleMissingObjects();
     }
 }

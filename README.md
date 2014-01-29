@@ -54,7 +54,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new domis86\TranslatorBundle\Domis86TranslatorBundle(),
+        new Domis86\TranslatorBundle\Domis86TranslatorBundle(),
         // ...
     );
     ...
@@ -82,6 +82,17 @@ php app/console doctrine:schema:update --force
 Install assets
 ``` console
 php app/console assets:install
+```
+
+#### Optional config:
+
+If your web server's DocumentRoot points to some other dir than symfony's `/web` dir then you can change `domis86_translator.assets_base_path` accordingly (default is `/bundles/domis86translator/`).
+Assuming your app.php url is `http://localhost/uglydirectory/web/app.php` then you should do:
+
+``` yaml
+domis86_translator:
+    managed_locales: [en, fr, de]
+    assets_base_path: /uglydirectory/web/bundles/domis86translator/
 ```
 
 ## Used libraries:

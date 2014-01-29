@@ -38,13 +38,13 @@ class TranslatorResponseListener
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        $this->messageManager->handleMissingObjects();
-
-        if (!$this->isWebDebugDialogEnabled) {
+        if (!$event->isMasterRequest()) {
             return;
         }
 
-        if (!$event->isMasterRequest()) {
+        $this->messageManager->handleMissingObjects();
+
+        if (!$this->isWebDebugDialogEnabled) {
             return;
         }
 

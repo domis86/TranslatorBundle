@@ -26,7 +26,6 @@ class TranslatorDataCollector extends DataCollector
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
-        $this->messageManager->handleMissingObjects();
         $this->data = array('location' => $this->messageManager->getLocationOfMessages());
     }
 
