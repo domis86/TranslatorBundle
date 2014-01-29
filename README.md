@@ -18,7 +18,7 @@ If you click on it a Edit Dialog will appear where you can edit translations use
 
 ![Tranlation missing](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/translation_from_file.png) - Black text is current translation stored in db. Blue text means that it is translation loaded from file - via default Symfony2 Translator service (messages.en.yml etc). It will be used if there is no translation in DB.
 
-In this example `hello` is translated to `Hallo` when language is ![german](https://raw2.github.com/domis86/TranslatorBundle/master/Resources/public/images/flags/de.png)german, but when language is ![french](https://raw2.github.com/domis86/TranslatorBundle/master/Resources/public/images/flags/fr.png)french then it is translated to `Bonjour` (which resides somewhere in messages.fr.yml). Hit `( Click to edit )` above `Bonjour` to change it.
+In this example `hello` is translated to `Hallo` when language is ![german](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/flags/de.png)german, but when language is ![french](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/flags/fr.png)french then it is translated to `Bonjour` (which resides somewhere in messages.fr.yml). Hit `( Click to edit )` above `Bonjour` to change it.
 
 
 You can also browse `[your_domain.com]/trans/backend` to edit all translations used in your application.
@@ -39,7 +39,6 @@ You can also browse `[your_domain.com]/trans/backend` to edit all translations u
 ## Installation
 
 Add the `domis86/translator-bundle` package to your `require` section in the `composer.json` file.
-
 ``` json
     ...
     "require": {
@@ -50,7 +49,6 @@ Add the `domis86/translator-bundle` package to your `require` section in the `co
 ```
 
 Add the Domis86TranslatorBundle to your AppKernel:
-
 ``` php
 public function registerBundles()
 {
@@ -64,14 +62,12 @@ public function registerBundles()
 ```
 
 Configure the `managed_locales` in your `config.yml`:
-
 ``` yaml
 domis86_translator:
     managed_locales: [en, fr, de]
 ```
 
 Add routes in your `routing.yml`:
-
 ``` yaml
 domis86_translator_routing:
     resource: "@Domis86TranslatorBundle/Resources/config/routing.yml"
@@ -79,9 +75,13 @@ domis86_translator_routing:
 ```
 
 Update your database:
-
-```
+``` console
 php app/console doctrine:schema:update --force
+```
+
+Install assets
+``` console
+php app/console assets:install
 ```
 
 ## Used libraries:

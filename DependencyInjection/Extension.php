@@ -35,7 +35,10 @@ class Extension extends BaseExtension
             $loader->load('services_dev.yml');
         }
 
+        $container->setParameter($this->getAlias() . '.config', $config);
         $container->setParameter($this->getAlias() . '.managed_locales', $config['managed_locales']);
+        $container->setParameter($this->getAlias() . '.assets_base_path', $config['assets_base_path']);
+        $container->setParameter($this->getAlias() . '.assets', $config['assets']);
     }
 
     /**

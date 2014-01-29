@@ -11,7 +11,8 @@ use Domis86\TranslatorBundle\Storage\Storage;
 class MessageManager
 {
     // TODO: refactor these? (convert to objects?):
-    private $missingMessagesList = array(); // domain_name => message_name
+    private $missingMessagesFromCollectionList = array(); // domain_name => message_name
+    private $missingMessagesFromStorageList = array(); // domain_name => message_name
     private $usedMessagesList = array(); // domain_name => message_name
 
     /**
@@ -105,11 +106,13 @@ class MessageManager
      */
     public function handleMissingObjects()
     {
-        if (!empty($this->missingMessagesList)) {
-            $this->storage->addMissingDomains(array_keys($this->missingMessagesList));
-            $this->storage->addMissingMessages($this->missingMessagesList);
-            $this->storage->addMissingMessageLocations($this->missingMessagesList, $this->locationOfMessages);
-            $this->missingMessagesList = array();
+        if (!empty($this->missingMessagesFromCollectionList)) {
+            //my_log('handleMissingObjects - 1 - storing');
+            $this->storage->addMissingDomains(array_keys($this->missingMessagesFromStorageList));
+            $this->storage->addMissingMessages($this->missingMessagesFromStorageList);
+            $this->storage->addMissingMessageLocations($this->missingMessagesFromCollectionList, $this->locationOfMessages);
+            $this->missingMessagesFromCollectionList = array();
+            $this->missingMessagesFromStorageList = array();
 
             $this->messageCollection = $this->storage->loadMessageCollectionForLocation($this->locationOfMessages);
         }
@@ -135,6 +138,8 @@ class MessageManager
      */
     public function saveMessageTranslation($uncleanMessageName, $uncleanDomainName, $uncleanLocale, $uncleanTranslation)
     {
+        // TODO: move saveMessageTranslation to WebDebugDialog class + extract "determine methods"
+
         $names = $this->determineNames($uncleanMessageName, $uncleanDomainName, $uncleanLocale);
         if ($names === false) return false;
         list($messageName, $domainName, $locale) = $names;
@@ -169,6 +174,9 @@ class MessageManager
      */
     private function tryToGetTranslationFromCollection($messageName, $domainName, $locale)
     {
+        // abort if Message doesn't exists in Storage
+        if (isset($this->missingMessagesFromStorageList[$domainName][$messageName])) return false;
+
         $this->markMessageAsUsed($messageName, $domainName);
 
         if (!$this->messageCollection) {
@@ -182,6 +190,7 @@ class MessageManager
             $this->markMessageAsMissingFromCollection($messageName, $domainName);
             $message = $this->storage->getMessage($messageName, $domainName);
             if (!$message) {
+                $this->markMessageAsMissingFromStorage($messageName, $domainName);
                 return false;
             }
             $this->messageCollection->addMessage($message);
@@ -287,6 +296,16 @@ class MessageManager
      */
     private function markMessageAsMissingFromCollection($messageName, $domainName)
     {
-        $this->missingMessagesList[$domainName][$messageName] = true;
+        $this->missingMessagesFromCollectionList[$domainName][$messageName] = true;
+    }
+
+    /**
+     * Mark that this Message does'nt exists in Storage (db)
+     * @param string $messageName
+     * @param string $domainName
+     */
+    private function markMessageAsMissingFromStorage($messageName, $domainName)
+    {
+        $this->missingMessagesFromStorageList[$domainName][$messageName] = true;
     }
 }

@@ -1,7 +1,8 @@
-function Domis86WebDebugDialogClass(aBackendMode) {
+function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
     var that = this;
 
     var backendMode = aBackendMode;
+    var assetsBasePath = aAssetsBasePath;
     var isInitialized = false;
     var countMessages = 0;
     var countMessagesTranslated = 0;
@@ -53,6 +54,12 @@ function Domis86WebDebugDialogClass(aBackendMode) {
     };
 
     function initDomis86WebDebugDialog() {
+        // add flags to table head
+        jQuery('th.column_translation.add_flag').each(function () {
+            var flagHtml = '<img src="' + assetsBasePath + 'external/images/flags/' + jQuery(this).data('locale') + '.png" />';
+            jQuery(this).prepend(flagHtml);
+        });
+
         // convert table to DataTable
         var tableWebDebugDialog = jQuery('table.domis86_web_debug_dialog_table').dataTable({
             "sScrollY": "300px",

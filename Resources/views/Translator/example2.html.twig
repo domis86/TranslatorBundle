@@ -1,0 +1,18 @@
+{% extends 'Domis86TranslatorBundle::base.html.twig' %}
+
+{% block title %}Example - {{ parent() }}{% endblock %}
+
+{% block content %}
+
+    <br/>
+    {{ exampleTranslations['some info'].en }}, {{ exampleTranslations['some info'].fr }}<br/>
+    {{ exampleTranslations.beer.en }}, {{ exampleTranslations.beer.fr }}, {{ exampleTranslations.beer.de }}<br/>
+    {{ exampleTranslations.hello.en }}, {{ exampleTranslations.hello.fr }}, {{ exampleTranslations.hello.de }}<br/>
+
+    {{ 'here begins render of subrequest in main request'|trans }}
+
+    {{ render(controller('domis86_translator.controller.translator_controller:exampleAction')) }}
+
+    {{ 'here ends render of subrequest in main request'|trans }}
+
+{% endblock %}

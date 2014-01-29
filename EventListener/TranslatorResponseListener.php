@@ -2,6 +2,7 @@
 
 namespace Domis86\TranslatorBundle\EventListener;
 
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -16,31 +17,34 @@ use Domis86\TranslatorBundle\Translation\MessageManager;
  */
 class TranslatorResponseListener
 {
-    /**
-     * @var bool
-     */
+    /** @var bool */
     private $isWebDebugDialogEnabled = false;
 
-    /**
-     * @var MessageManager
-     */
+    /** @var MessageManager */
     private $messageManager;
 
-    /**
-     * @var PackageInterface
-     */
-    private $templatingHelperAssets;
+    /** @var EngineInterface */
+    private $templating = null;
 
-    public function __construct(MessageManager $messageManager, PackageInterface $templatingHelperAssets)
+    /** @var array */
+    private $bundleConfig = array();
+
+    public function __construct(MessageManager $messageManager, EngineInterface $templating, array $bundleConfig)
     {
         $this->messageManager = $messageManager;
-        $this->templatingHelperAssets = $templatingHelperAssets;
+        $this->templating = $templating;
+        $this->bundleConfig = $bundleConfig;
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
         $this->messageManager->handleMissingObjects();
+
         if (!$this->isWebDebugDialogEnabled) {
+            return;
+        }
+
+        if (!$event->isMasterRequest()) {
             return;
         }
 
@@ -49,11 +53,6 @@ class TranslatorResponseListener
         if ($location->isEqualTo($this->messageManager->getLocationOfBackendAction())) {
             return;
         }
-
-// TODO: decide if this should try inject Domis86WebDebugDialog only in MASTER_REQUEST
-//        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-//            return;
-//        }
 
         $this->injectJavascriptToResponse($event->getResponse());
     }
@@ -87,29 +86,17 @@ class TranslatorResponseListener
             return;
         }
 
-        // prepare inject
-        // TODO: Get assets from config. Create template and render here.
-        $assets = array(
-            'asset_jquery_url'         => '/bundles/domis86translator/js/external/jquery-2.0.3.min.js',
-            'asset_jquery_ui_url'      => '/bundles/domis86translator/js/external/jquery-ui.1.10.3.min.js',
-            'asset_jquery_ui_css_url'  => '/bundles/domis86translator/css/jquery-ui.1.10.3.css',
-            'asset_datatables_url'     => '/bundles/domis86translator/js/external/jquery.dataTables.1.10.0-dev.min.js',
-            'asset_datatables_css_url' => '/bundles/domis86translator/css/jquery.dataTables.css',
-            'asset_jeditable_url'      => '/bundles/domis86translator/js/external/jquery.jeditable.mini.js',
-            'asset_webdebugdialog_url' => '/bundles/domis86translator/js/webDebugDialog.js'
+        $assets = $this->templating->render(
+            'Domis86TranslatorBundle:Translator:assets.html.twig',
+            array(
+                'bundleConfig' => $this->bundleConfig,
+                'backendMode' => false
+            )
         );
-
-        $html = '<span id="domis86_data_for_loadwebdebugdialogjs" style="display:none;"';
-        foreach ($assets as $name=>$asset) {
-            $assetUrl = $this->templatingHelperAssets->getUrl($asset);
-            $html .= ' data-' . $name . '="' . $assetUrl . '"';
-        }
-        $html .= '></span>';
-        $jsUrl = $this->templatingHelperAssets->getUrl('bundles/domis86translator/js/loadWebDebugDialog.js');
-        $html .= '<script type="text/javascript" src="' . $jsUrl . '"></script>';
+        //$assets = "\n".str_replace("\n", '', $assets);
 
         // do inject
-        $content = $substrFunction($content, 0, $pos) . $html . $substrFunction($content, $pos);
+        $content = $substrFunction($content, 0, $pos) . $assets . $substrFunction($content, $pos);
         $response->setContent($content);
         $response->headers->set('Domis86TranslatorDialog-Token', 1);
     }

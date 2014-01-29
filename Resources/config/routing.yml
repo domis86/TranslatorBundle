@@ -10,3 +10,7 @@ domis86_translator_translator_save_message:
 domis86_translator_translator_example:
     path: /example
     defaults:     { _controller: domis86_translator.controller.translator_controller:exampleAction }
+
+domis86_translator_translator_example2:
+    path: /example2
+    defaults:     { _controller: domis86_translator.controller.translator_controller:example2Action }

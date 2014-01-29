@@ -8,9 +8,6 @@
     </div>
 
     {% include 'Domis86TranslatorBundle:Translator:webDebugDialog.html.twig' %}
-{% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/domis86translator/js/loadWebDebugDialog.js') }}"></script>
+    {% include 'Domis86TranslatorBundle:Translator:assets.html.twig' with { 'backendMode': backendMode, 'bundleConfig': bundleConfig } %}
 {% endblock %}

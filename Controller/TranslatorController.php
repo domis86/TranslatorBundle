@@ -22,21 +22,25 @@ class TranslatorController
     /** @var WebDebugDialog */
     private $webDebugDialog = null;
 
+    /** @var array */
+    private $bundleConfig = array();
+
     /** @var TranslatorInterface */
     private $translator = null;
 
-    function __construct(EngineInterface $templating, MessageManager $messageManager, WebDebugDialog $webDebugDialog, TranslatorInterface $translator)
+    function __construct(EngineInterface $templating, MessageManager $messageManager, WebDebugDialog $webDebugDialog, array $bundleConfig, TranslatorInterface $translator)
     {
         $this->templating = $templating;
         $this->messageManager = $messageManager;
         $this->webDebugDialog = $webDebugDialog;
+        $this->bundleConfig = $bundleConfig;
         $this->translator = $translator;
     }
 
     public function saveMessageAction(Request $request)
     {
         // TODO: add security
-
+        // TODO: move saveMessageTranslation to WebDebugDialog class
         $messageTranslation = $this->messageManager->saveMessageTranslation(
             $request->request->get('message_name'),
             $request->request->get('message_domain_name'),
@@ -80,12 +84,34 @@ class TranslatorController
             'Domis86TranslatorBundle:Translator:backend.html.twig',
             array(
                 'webDebugDialog' => $this->webDebugDialog->getDataForBackend(),
-                'backendMode' => true
+                'backendMode' => true,
+                'bundleConfig' => $this->bundleConfig
             )
         );
     }
 
     public function exampleAction()
+    {
+        $exampleTranslations = $this->exampleData();
+
+        return $this->templating->renderResponse(
+            'Domis86TranslatorBundle:Translator:example.html.twig',
+            array('exampleTranslations' => $exampleTranslations)
+        );
+    }
+
+    public function example2Action()
+    {
+        return $this->templating->renderResponse(
+            'Domis86TranslatorBundle:Translator:example2.html.twig',
+            array('exampleTranslations' => $this->exampleData())
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function exampleData()
     {
         $exampleTranslations = array();
         $exampleTranslations['hello']['fr'] = $this->translator->trans('hello', array(), 'messages', 'fr');
@@ -96,10 +122,6 @@ class TranslatorController
         $exampleTranslations['beer']['de'] = $this->translator->trans('beer', array(), 'messages', 'de');
         $exampleTranslations['some info']['fr'] = $this->translator->trans('some info', array(), 'infos', 'fr');
         $exampleTranslations['some info']['en'] = $this->translator->trans('some info', array(), 'infos', 'en');
-
-        return $this->templating->renderResponse(
-            'Domis86TranslatorBundle:Translator:example.html.twig',
-            array('exampleTranslations' => $exampleTranslations)
-        );
+        return $exampleTranslations;
     }
 }

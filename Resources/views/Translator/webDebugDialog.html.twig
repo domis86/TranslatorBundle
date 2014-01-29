@@ -51,7 +51,6 @@
      class="dataTable"
      style="display:none; background-color: burlywood;"
      title="{{ title|raw }}"
-     data-backend_mode="{% if backendMode %}on{% else %}off{% endif %}"
      data-submit_url="{{ path('domis86_translator_translator_save_message')|escape }}"
         >
     {% endspaceless %}
@@ -62,7 +61,7 @@
             <th class="column_domain_name">Domain</th>
             <th class="column_name">Name</th>
             {% for a_locale in webDebugDialog.managedLocales %}
-                <th class="column_translation">Translation {{ a_locale|upper }}</th>
+                <th class="column_translation add_flag" data-locale="{{ a_locale }}">Translation&nbsp;{{ a_locale|upper }}</th>
             {% endfor %}
         </tr>
         </thead>

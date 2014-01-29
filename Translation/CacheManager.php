@@ -49,7 +49,7 @@ class CacheManager
     public function saveMessageCollectionForLocation(LocationVO $location, MessageCollection $messageCollection)
     {
         if (!$messageCollection->isModified()) return;
-
+        //my_log('handleMissingObjects - 2 - updating cache');
         $filename = $this->buildCacheFilename($location);
         $cache = new ConfigCache($filename, $this->debug);
         $content = '<?php
@@ -67,10 +67,12 @@ return ' . var_export($messageCollection->export(), true) . ';
     private function buildCacheFilename(LocationVO $location)
     {
         $actionName = str_replace(":", "_", $location->getActionName());
-        return $this->cacheDir
+        $filename = $this->cacheDir
         . '/' . $location->getBundleName()
         . '/' . $location->getControllerName()
         . '/' . $actionName
         . '_messages.php';
+        $filename = str_replace("\\", "/", $filename);
+        return $filename;
     }
 }

@@ -1,0 +1,10 @@
+<div id="domis86_data_for_loadwebdebugdialog" style="display:none;"
+    data-backend_mode="{% if backendMode %}on{% else %}off{% endif %}"
+    data-assets_base_path="{{ bundleConfig.assets_base_path }}"
+{% for name, urls in bundleConfig.assets %}
+{% for url in urls %}
+    data-{{ name }}_url_{{ loop.index }}="{{ asset(url) }}"
+{% endfor %}
+{% endfor %}
+></div>
+<script type="text/javascript" src="{{ bundleConfig.assets['domis86_loadwebdebugdialog'][0] }}"></script>

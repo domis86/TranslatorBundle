@@ -12,7 +12,7 @@ services:
 
     domis86_translator.controller.translator_controller:
         class: '%domis86_translator.controller.translator_controller.class%'
-        arguments: [@templating, @domis86_translator.message_manager, @domis86_translator.web_debug_dialog, @translator]
+        arguments: [@templating, @domis86_translator.message_manager, @domis86_translator.web_debug_dialog, %domis86_translator.config%, @translator]
 
 # private
 
@@ -55,7 +55,7 @@ services:
             - { name: kernel.event_listener, event: kernel.controller, priority: 16 }
     domis86_translator.response_listener:
         class: Domis86\TranslatorBundle\EventListener\TranslatorResponseListener
-        arguments: [@domis86_translator.message_manager, @templating.helper.assets]
+        arguments: [@domis86_translator.message_manager, @templating, %domis86_translator.config%]
         scope: request
         tags:
             - { name: kernel.event_listener, event: kernel.response, priority: -64 }
