@@ -14,7 +14,7 @@ class Domis86TranslatorBundle extends Bundle
      */
     public function getContainerExtension()
     {
-        return new Extension();
+        return new Extension($this->getPath());
     }
 
     /**

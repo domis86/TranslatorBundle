@@ -23,7 +23,7 @@ class CacheManager
     public function __construct($cacheDir, $debug)
     {
         $this->cacheDir = $cacheDir;
-        $this->debug = false; //$debug;
+        $this->debug = $debug;
     }
 
     /**
@@ -57,7 +57,7 @@ return ' . var_export($messageCollection->export(), true) . ';
 
 ';
         $cache->write($content);
-        $messageCollection->setIsModified(false);
+        $messageCollection->setModified(false);
     }
 
     /**

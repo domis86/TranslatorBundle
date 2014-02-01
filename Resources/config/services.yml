@@ -17,29 +17,32 @@ services:
 # private
 
     domis86_translator.message_manager:
-
+        public: false
         class: Domis86\TranslatorBundle\Translation\MessageManager
         arguments:
             - @domis86_translator.storage
             - @domis86_translator.cache_manager
             - %domis86_translator.managed_locales%
-    domis86_translator.cache_manager:
 
+    domis86_translator.cache_manager:
+        public: false
         class: Domis86\TranslatorBundle\Translation\CacheManager
         arguments:
             - %kernel.cache_dir%/domis86translator
-            - %kernel.debug%
-    domis86_translator.storage:
+            - false #%kernel.debug%
 
+    domis86_translator.storage:
+        public: false
         class: Domis86\TranslatorBundle\Storage\Storage
         arguments: [@doctrine.orm.entity_manager]
 
     domis86_translator.web_debug_dialog:
-
+        public: false
         class: Domis86\TranslatorBundle\Translation\WebDebugDialog
         arguments: [@domis86_translator.storage, @domis86_translator.message_manager, @domis86_translator.translator.parent]
 
     domis86_translator.data_collector:
+        public: false
         class: Domis86\TranslatorBundle\DataCollector\TranslatorDataCollector
         arguments: [@domis86_translator.message_manager]
         tags:

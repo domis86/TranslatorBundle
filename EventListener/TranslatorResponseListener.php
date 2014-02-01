@@ -6,8 +6,6 @@ use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Templating\Asset\PackageInterface;
 use Domis86\TranslatorBundle\Translation\MessageManager;
 
 /**
@@ -45,6 +43,16 @@ class TranslatorResponseListener
         $this->messageManager->handleMissingObjects();
 
         if (!$this->isWebDebugDialogEnabled) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $request = $event->getRequest();
+        if ($response->isRedirection()
+            || ($response->headers->has('Content-Type') && false === strpos($response->headers->get('Content-Type'), 'html'))
+            || 'html' !== $request->getRequestFormat()
+        ) {
+            // not html or is redirect --> do not inject
             return;
         }
 
@@ -93,7 +101,7 @@ class TranslatorResponseListener
                 'backendMode' => false
             )
         );
-        //$assets = "\n".str_replace("\n", '', $assets);
+        $assets = "\n".str_replace("\n", '', $assets);
 
         // do inject
         $content = $substrFunction($content, 0, $pos) . $assets . $substrFunction($content, $pos);

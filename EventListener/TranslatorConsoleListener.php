@@ -45,9 +45,8 @@ class TranslatorConsoleListener
         $this->messageManager->setLocationOfMessages($locationOfMessages);
     }
 
-    public function onConsoleTerminate(ConsoleTerminateEvent $event)
+    public function onConsoleTerminate()
     {
-        //$command = $event->getCommand();
         $this->messageManager->handleMissingObjects();
     }
 }

@@ -38,7 +38,7 @@ You can also browse `[your_domain.com]/trans/backend` to edit all translations u
 
 ## Installation
 
-Add the `domis86/translator-bundle` package to your `require` section in the `composer.json` file.
+Add the `domis86/translator-bundle` package to your `require` section in the `composer.json` file:
 ``` json
     ...
     "require": {

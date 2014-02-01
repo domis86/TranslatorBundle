@@ -12,6 +12,14 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class Extension extends BaseExtension
 {
+    /** @var string */
+    private $bundlePath = '';
+
+    function __construct($bundlePath)
+    {
+        $this->bundlePath = $bundlePath;
+    }
+
     /**
      * @return string Bundle alias
      */
@@ -28,7 +36,7 @@ class Extension extends BaseExtension
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator($this->bundlePath . DIRECTORY_SEPARATOR .'Resources' . DIRECTORY_SEPARATOR . 'config'));
         $loader->load('services.yml');
         if ($container->getParameter('kernel.environment') == 'dev') {
             // load configs for dev environment (toolbar for translation messages, admin etc)

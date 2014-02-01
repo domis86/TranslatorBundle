@@ -18,7 +18,7 @@ class MessageCollection
     /**
      * @var bool
      */
-    private $isModified = false;
+    private $modified = false;
 
     /**
      * @param Message $message
@@ -29,7 +29,7 @@ class MessageCollection
         $domainName = $messageAsArray['domain']['name'];
         $messageName = $messageAsArray['name'];
         $this->messagesIndexedByName[$domainName][$messageName] = $messageAsArray;
-        $this->setIsModified(true);
+        $this->setModified(true);
     }
 
     /**
@@ -71,15 +71,15 @@ class MessageCollection
      */
     public function isModified()
     {
-        return $this->isModified;
+        return $this->modified;
     }
 
     /**
-     * @param bool $isModified
+     * @param bool $modified
      */
-    public function setIsModified($isModified)
+    public function setModified($modified)
     {
-        $this->isModified = $isModified;
+        $this->modified = $modified;
     }
 
     /**
