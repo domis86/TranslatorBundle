@@ -39,9 +39,6 @@ class MessageCollection
      */
     public function hasMessage($messageName, $domainName)
     {
-        if (!isset($this->messagesIndexedByName[$domainName])) {
-            return false;
-        }
         if (!isset($this->messagesIndexedByName[$domainName][$messageName])) {
             return false;
         }

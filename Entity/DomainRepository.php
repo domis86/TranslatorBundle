@@ -14,7 +14,6 @@ class DomainRepository extends EntityRepository
      */
     public function findAllAsArray()
     {
-        // TODO: convert to value object
         $objects = parent::findAll();
         $objects_by_name = array();
         foreach ($objects as $key => $object) {

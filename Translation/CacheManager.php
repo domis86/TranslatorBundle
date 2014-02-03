@@ -49,7 +49,7 @@ class CacheManager
     public function saveMessageCollectionForLocation(LocationVO $location, MessageCollection $messageCollection)
     {
         if (!$messageCollection->isModified()) return;
-        //my_log('handleMissingObjects - 2 - updating cache');
+
         $filename = $this->buildCacheFilename($location);
         $cache = new ConfigCache($filename, $this->debug);
         $content = '<?php

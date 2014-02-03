@@ -5,9 +5,7 @@ namespace Domis86\TranslatorBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 use Domis86\TranslatorBundle\Translation\LocationVO;
-use Domis86\TranslatorBundle\Translation\MessageManager;
 use Domis86\TranslatorBundle\Translation\WebDebugDialog;
 
 
@@ -16,32 +14,22 @@ class TranslatorController
     /** @var EngineInterface */
     private $templating = null;
 
-    /** @var MessageManager */
-    private $messageManager = null;
-
     /** @var WebDebugDialog */
     private $webDebugDialog = null;
 
     /** @var array */
     private $bundleConfig = array();
 
-    /** @var TranslatorInterface */
-    private $translator = null;
-
-    function __construct(EngineInterface $templating, MessageManager $messageManager, WebDebugDialog $webDebugDialog, array $bundleConfig, TranslatorInterface $translator)
+    function __construct(EngineInterface $templating, WebDebugDialog $webDebugDialog, array $bundleConfig)
     {
         $this->templating = $templating;
-        $this->messageManager = $messageManager;
         $this->webDebugDialog = $webDebugDialog;
         $this->bundleConfig = $bundleConfig;
-        $this->translator = $translator;
     }
 
     public function saveMessageAction(Request $request)
     {
-        // TODO: add security
-        // TODO: move saveMessageTranslation to WebDebugDialog class
-        $messageTranslation = $this->messageManager->saveMessageTranslation(
+        $messageTranslation = $this->webDebugDialog->saveMessageTranslation(
             $request->request->get('message_name'),
             $request->request->get('message_domain_name'),
             $request->request->get('message_translation_locale'),
@@ -79,7 +67,9 @@ class TranslatorController
      */
     public function backendAction()
     {
-        // TODO: add security
+        if (!$this->bundleConfig['is_enabled']) {
+            return new Response('Domis86TranslatorBundle is not enabled in your config.yml - more info: <a href="https://github.com/domis86/TranslatorBundle">https://github.com/domis86/TranslatorBundle</a>');
+        }
         return $this->templating->renderResponse(
             'Domis86TranslatorBundle:Translator:backend.html.twig',
             array(
@@ -90,38 +80,4 @@ class TranslatorController
         );
     }
 
-    public function exampleAction()
-    {
-        $exampleTranslations = $this->exampleData();
-
-        return $this->templating->renderResponse(
-            'Domis86TranslatorBundle:Translator:example.html.twig',
-            array('exampleTranslations' => $exampleTranslations)
-        );
-    }
-
-    public function example2Action()
-    {
-        return $this->templating->renderResponse(
-            'Domis86TranslatorBundle:Translator:example2.html.twig',
-            array('exampleTranslations' => $this->exampleData())
-        );
-    }
-
-    /**
-     * @return array
-     */
-    private function exampleData()
-    {
-        $exampleTranslations = array();
-        $exampleTranslations['hello']['fr'] = $this->translator->trans('hello', array(), 'messages', 'fr');
-        $exampleTranslations['hello']['en'] = $this->translator->trans('hello', array(), 'messages', 'en');
-        $exampleTranslations['hello']['de'] = $this->translator->trans('hello', array(), 'messages', 'de');
-        $exampleTranslations['beer']['fr'] = $this->translator->trans('beer', array(), 'messages', 'fr');
-        $exampleTranslations['beer']['en'] = $this->translator->trans('beer', array(), 'messages', 'en');
-        $exampleTranslations['beer']['de'] = $this->translator->trans('beer', array(), 'messages', 'de');
-        $exampleTranslations['some info']['fr'] = $this->translator->trans('some info', array(), 'infos', 'fr');
-        $exampleTranslations['some info']['en'] = $this->translator->trans('some info', array(), 'infos', 'en');
-        return $exampleTranslations;
-    }
 }

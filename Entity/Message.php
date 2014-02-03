@@ -83,7 +83,6 @@ class Message
      */
     public function doStuffOnPrePersist()
     {
-        // TODO: maybe create parent class and move this method there
         if (!$this->getCreatedAt()) $this->setCreatedAt(date_create(date('Y-m-d H:i:s')));
         $this->doStuffOnPreUpdate();
     }

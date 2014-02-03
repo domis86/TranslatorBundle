@@ -39,9 +39,10 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->addDefaultsIfNotSet()
             ->children()
+                ->booleanNode('is_enabled')->defaultFalse()->end()
+                ->booleanNode('is_web_debug_dialog_enabled')->defaultFalse()->end()
                 ->arrayNode('managed_locales')
                     ->prototype('scalar')->end()
-                    ->isRequired()
                     ->cannotBeEmpty()
                 ->end()
                 ->scalarNode('assets_base_path')
@@ -92,7 +93,6 @@ class Configuration implements ConfigurationInterface
         /** @noinspection PhpUndefinedMethodInspection */
         $node
             ->prototype('scalar')->end()
-            ->isRequired()
             ->cannotBeEmpty()
             ->defaultValue($defaultItems)
         ;

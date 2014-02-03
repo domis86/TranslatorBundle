@@ -10,10 +10,9 @@ use Domis86\TranslatorBundle\Storage\Storage;
  */
 class MessageManager
 {
-    // TODO: refactor these? (convert to objects?):
     private $missingMessagesFromCollectionList = array(); // domain_name => message_name
-    private $missingMessagesFromStorageList = array(); // domain_name => message_name
-    private $usedMessagesList = array(); // domain_name => message_name
+    private $missingMessagesFromStorageList = array();    // domain_name => message_name
+    private $usedMessagesList = array();                  // domain_name => message_name
 
     /**
      * @var LocationVO $locationOfMessages Location of Messages in current request
@@ -29,19 +28,19 @@ class MessageManager
     /** @var CacheManager */
     private $cacheManager;
 
-    /** @var array */
-    private $managedLocales;
+    /** @var NamingVerifier */
+    private $namingVerifier;
 
     /**
      * @param Storage $storage
      * @param CacheManager $cacheManager
-     * @param array $managedLocales
+     * @param NamingVerifier $namingVerifier
      */
-    public function __construct(Storage $storage, CacheManager $cacheManager, array $managedLocales)
+    public function __construct(Storage $storage, CacheManager $cacheManager, NamingVerifier $namingVerifier)
     {
         $this->storage = $storage;
         $this->cacheManager = $cacheManager;
-        $this->managedLocales = $managedLocales;
+        $this->namingVerifier = $namingVerifier;
 
         // This will be lazy loaded at first attempt of message translation
         $this->messageCollection = null;
@@ -52,26 +51,23 @@ class MessageManager
     }
 
     /**
-     * @param string $uncleanMessageName
-     * @param string $uncleanDomainName
-     * @param string $uncleanLocale
-     * @param array $parameters
+     * @param string $messageName
+     * @param string $domainNameCandidate
+     * @param string $localeCandidate
      * @return string|bool Translation(string) or false(bool)
      */
-    public function translateMessage($uncleanMessageName, $uncleanDomainName, $uncleanLocale, array $parameters = array())
+    public function translateMessage($messageName, $domainNameCandidate, $localeCandidate)
     {
-        $names = $this->determineNames($uncleanMessageName, $uncleanDomainName, $uncleanLocale);
-        if ($names === false) return false;
-        list($messageName, $domainName, $locale) = $names;
+        $locale = $this->namingVerifier->determineLocale($localeCandidate);
+        if (!$locale) {
+            return false;
+        }
+        $domainName = $this->namingVerifier->determineDomainName($domainNameCandidate);
 
         $translation = $this->tryToGetTranslationFromCollection($messageName, $domainName, $locale);
         if (!$translation) {
             // no translation has been found
             return false;
-        }
-        if (!empty($parameters)) {
-            // TODO: check handling of parameters
-            return strtr($translation, $parameters);
         }
         return $translation;
     }
@@ -107,7 +103,6 @@ class MessageManager
     public function handleMissingObjects()
     {
         if (!empty($this->missingMessagesFromCollectionList)) {
-            //my_log('handleMissingObjects - 1 - storing');
             $this->storage->addMissingDomains(array_keys($this->missingMessagesFromStorageList));
             $this->storage->addMissingMessages($this->missingMessagesFromStorageList);
             $this->storage->addMissingMessageLocations($this->missingMessagesFromCollectionList, $this->locationOfMessages);
@@ -119,51 +114,6 @@ class MessageManager
         if ($this->messageCollection) {
             $this->cacheManager->saveMessageCollectionForLocation($this->locationOfMessages, $this->messageCollection);
         }
-    }
-
-    /**
-     * @return array
-     */
-    public function getManagedLocales()
-    {
-        return $this->managedLocales;
-    }
-
-    /**
-     * @param string $uncleanMessageName
-     * @param string $uncleanDomainName
-     * @param string $uncleanLocale
-     * @param string $uncleanTranslation
-     * @return string|bool
-     */
-    public function saveMessageTranslation($uncleanMessageName, $uncleanDomainName, $uncleanLocale, $uncleanTranslation)
-    {
-        // TODO: move saveMessageTranslation to WebDebugDialog class + extract "determine methods"
-
-        $names = $this->determineNames($uncleanMessageName, $uncleanDomainName, $uncleanLocale);
-        if ($names === false) return false;
-        list($messageName, $domainName, $locale) = $names;
-
-        $message = $this->storage->getMessage($messageName, $domainName);
-        if (!$message) {
-            return false;
-        }
-
-        $translation = $this->determineTranslation($uncleanTranslation);
-        if ($translation === false) {
-            $this->storage->removeMessageTranslation($message, $locale);
-            return '';
-        }
-
-        $messageTranslation = $this->storage->saveMessageTranslation($message, $locale, $translation);
-
-        // update cache for Locations of this Message
-        $locations = $messageTranslation->getMessage()->getArrayOfLocationVOs();
-        foreach ($locations as $location) {
-            $messageCollection = $this->storage->loadMessageCollectionForLocation($location);
-            $this->cacheManager->saveMessageCollectionForLocation($location, $messageCollection);
-        }
-        return $messageTranslation->getTranslation();
     }
 
     /**
@@ -187,6 +137,7 @@ class MessageManager
         }
 
         if (!$this->messageCollection->hasMessage($messageName, $domainName)) {
+            $this->namingVerifier->verifyNames($messageName, $domainName);
             $this->markMessageAsMissingFromCollection($messageName, $domainName);
             $message = $this->storage->getMessage($messageName, $domainName);
             if (!$message) {
@@ -197,86 +148,6 @@ class MessageManager
         }
 
         return $this->messageCollection->getTranslationOfMessageAsString($messageName, $domainName, $locale);
-    }
-
-    /**
-     * @param string $uncleanLocale
-     * @return string|bool Locale(string) or false(bool) if given locale is not in %domis86_translator.managed_locales%
-     */
-    private function determineLocale($uncleanLocale)
-    {
-        $locale = trim($uncleanLocale);
-        if (strlen($locale) < 1) {
-            // return default locale
-            return $this->managedLocales[0];
-        }
-        if (!in_array($locale, $this->managedLocales)) {
-            // we don't manage this locale
-            return false;
-        }
-        return $locale;
-    }
-
-    /**
-     * @param string $uncleanDomainName
-     * @return string Clean Domain name
-     */
-    private function determineDomainName($uncleanDomainName)
-    {
-        $domainName = trim($uncleanDomainName);
-        if (strlen($domainName) < 1) {
-            return 'messages';
-        }
-        return $domainName;
-    }
-
-    /**
-     * @param string $uncleanMessageName
-     * @return string|bool Clean Message name or false(bool)
-     */
-    private function determineMessageName($uncleanMessageName)
-    {
-        $messageName = trim($uncleanMessageName);
-        if (strlen($messageName) < 1) {
-            // this Message name is not valid
-            return false;
-        }
-        return $messageName;
-    }
-
-    /**
-     * @param $uncleanMessageName
-     * @param $uncleanDomainName
-     * @param $uncleanLocale
-     * @return array|bool
-     */
-    private function determineNames($uncleanMessageName, $uncleanDomainName, $uncleanLocale)
-    {
-        $locale = $this->determineLocale($uncleanLocale);
-        if ($locale === false) {
-            // invalid locale
-            return false;
-        }
-        $messageName = $this->determineMessageName($uncleanMessageName);
-        if ($messageName === false) {
-            // invalid (empty?) message name
-            return false;
-        }
-        $domainName = $this->determineDomainName($uncleanDomainName);
-        return array($messageName, $domainName, $locale);
-    }
-
-    /**
-     * @param string $uncleanTranslation
-     * @return string|bool Clean translation or false(bool)
-     */
-    private function determineTranslation($uncleanTranslation)
-    {
-        $translation = trim($uncleanTranslation);
-        if (strlen($translation) < 1) {
-            return false;
-        }
-        return $translation;
     }
 
     /**

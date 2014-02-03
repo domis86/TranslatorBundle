@@ -21,7 +21,7 @@ If you click on it a Edit Dialog will appear where you can edit translations use
 In this example `hello` is translated to `Hallo` when language is ![german](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/flags/de.png)german, but when language is ![french](https://github.com/domis86/TranslatorBundle/raw/master/Resources/doc/flags/fr.png)french then it is translated to `Bonjour` (which resides somewhere in messages.fr.yml). Hit `( Click to edit )` above `Bonjour` to change it.
 
 
-You can also browse `[your_domain.com]/trans/backend` to edit all translations used in your application.
+You can also browse `[your_domain.com]/app_dev.php/domis86translator/backend` to edit all translations used in your application.
 
 ## Features
 
@@ -50,6 +50,7 @@ Add the `domis86/translator-bundle` package to your `require` section in the `co
 
 Add the Domis86TranslatorBundle to your AppKernel:
 ``` php
+// app/AppKernel.php
 public function registerBundles()
 {
     $bundles = array(
@@ -61,17 +62,27 @@ public function registerBundles()
 }
 ```
 
-Configure the `managed_locales` in your `config.yml`:
+Enable this bundle and configure `managed_locales` in your `config.yml`:
 ``` yaml
+# config.yml
 domis86_translator:
+    is_enabled: true
     managed_locales: [en, fr, de]
 ```
 
-Add routes in your `routing.yml`:
+Enable Dialog for `dev` environment in your `config_dev.yml`:
 ``` yaml
+# config_dev.yml
+domis86_translator:
+    is_web_debug_dialog_enabled: true
+```
+
+Add routes in your `routing_dev.yml`:
+``` yaml
+# routing_dev.yml
 domis86_translator_routing:
     resource: "@Domis86TranslatorBundle/Resources/config/routing.yml"
-    prefix:   /trans
+    prefix:   /domis86translator
 ```
 
 Update your database:

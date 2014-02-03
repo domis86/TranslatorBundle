@@ -3,7 +3,6 @@
 namespace Domis86\TranslatorBundle\EventListener;
 
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
-use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Domis86\TranslatorBundle\Translation\LocationVO;
 use Domis86\TranslatorBundle\Translation\MessageManager;
 

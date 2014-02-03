@@ -8,7 +8,6 @@ use Domis86\TranslatorBundle\Entity\DomainRepository;
 use Domis86\TranslatorBundle\Entity\Message;
 use Domis86\TranslatorBundle\Entity\MessageRepository;
 use Domis86\TranslatorBundle\Entity\MessageLocation;
-use Domis86\TranslatorBundle\Entity\MessageLocationRepository;
 use Domis86\TranslatorBundle\Entity\MessageTranslation;
 use Domis86\TranslatorBundle\Translation\LocationVO;
 use Domis86\TranslatorBundle\Translation\MessageCollection;
@@ -24,22 +23,6 @@ class Storage implements StorageInterface
     {
         $this->entityManager = $entityManager;
     }
-
-// TODO: is this method needed?
-//    /**
-//     * @param string $messageName
-//     * @param string $domainName
-//     * @return bool
-//     */
-//    public function hasMessage($messageName, $domainName)
-//    {
-//        $messageRepository = $this->getMessageRepository();
-//        $message = $messageRepository->findOneByNameAndDomain($messageName, $domainName);
-//        if (!$message) {
-//            return false;
-//        }
-//        return true;
-//    }
 
     /**
      * @param string $messageName
@@ -130,7 +113,7 @@ class Storage implements StorageInterface
         // persist missing Messages from the list
         foreach ($missingMessagesList as $domainName => $missingMessagesOfDomain) {
             foreach ($missingMessagesOfDomain as $missingMessageName => $isMissing) {
-                if ($messageRepository->findOneByNameAndDomain($missingMessageName, $domainName)) {
+                if ($messageRepository->hasMessage($missingMessageName, $domainName)) {
                     // Message already exists --> skip
                     continue;
                 }
@@ -169,16 +152,16 @@ class Storage implements StorageInterface
     {
         if (empty($missingMessagesList)) return;
         $messageRepository = $this->getMessageRepository();
-        $messageLocationRepository = $this->getMessageLocationRepository();
+
         foreach ($missingMessagesList as $domainName => $missingMessagesOfDomain) {
             foreach ($missingMessagesOfDomain as $missingMessageName => $isMissing) {
-                $message = $messageRepository->findOneByNameAndDomain($missingMessageName, $domainName);
-                if ($messageLocationRepository->findOneByMessageAndLocationVO($message, $locationOfMessages)) {
+                $messageId = $messageRepository->checkIfMessageLocationNeedsToBeAdded($missingMessageName, $domainName, $locationOfMessages);
+                if (!$messageId) {
                     // MessageLocation already exists --> skip
                     continue;
                 }
                 $messageLocation = new MessageLocation();
-                $messageLocation->setMessage($message);
+                $messageLocation->setMessage($messageRepository->getMessageReference($messageId));
                 $messageLocation->setLocation($locationOfMessages);
                 $this->entityManager->persist($messageLocation);
             }
@@ -208,14 +191,6 @@ class Storage implements StorageInterface
     private function getDomainRepository()
     {
         return $this->entityManager->getRepository("Domis86TranslatorBundle:Domain");
-    }
-
-    /**
-     * @return MessageLocationRepository
-     */
-    private function getMessageLocationRepository()
-    {
-        return $this->entityManager->getRepository("Domis86TranslatorBundle:MessageLocation");
     }
 
 }

@@ -62,7 +62,7 @@ class BaseValueObject
     /**
      * Data accessor
      *
-     * @param string $functionName
+     * @param string $name
      *
      * @throws \Exception
      * @return mixed

@@ -99,7 +99,7 @@ class MessageTranslation
     /**
      * Set message_id
      *
-     * @param integer $message_id
+     * @param integer $messageId
      * @return MessageTranslation
      */
     public function setMessageId($messageId)

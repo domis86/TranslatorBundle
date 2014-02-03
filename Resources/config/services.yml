@@ -1,6 +1,7 @@
 parameters:
     domis86_translator.translator.class: Domis86\TranslatorBundle\Translation\Translator
     domis86_translator.controller.translator_controller.class: Domis86\TranslatorBundle\Controller\TranslatorController
+    domis86_translator.data_collector.class: Domis86\TranslatorBundle\DataCollector\TranslatorDataCollector
 
 services:
 
@@ -8,11 +9,11 @@ services:
 
     domis86_translator.translator:
         class: '%domis86_translator.translator.class%'
-        arguments: [@domis86_translator.translator.parent, @domis86_translator.message_manager]
+        arguments: [@domis86_translator.message_manager, @translator.selector]
 
     domis86_translator.controller.translator_controller:
         class: '%domis86_translator.controller.translator_controller.class%'
-        arguments: [@templating, @domis86_translator.message_manager, @domis86_translator.web_debug_dialog, %domis86_translator.config%, @translator]
+        arguments: [@templating, @domis86_translator.web_debug_dialog, %domis86_translator.config%, @translator, @translation.writer]
 
 # private
 
@@ -22,49 +23,45 @@ services:
         arguments:
             - @domis86_translator.storage
             - @domis86_translator.cache_manager
-            - %domis86_translator.managed_locales%
+            - @domis86_translator.message_verifier
 
-    domis86_translator.cache_manager:
+    domis86_translator.web_debug_dialog:
         public: false
-        class: Domis86\TranslatorBundle\Translation\CacheManager
+        class: Domis86\TranslatorBundle\Translation\WebDebugDialog
+        arguments: [@domis86_translator.storage, @domis86_translator.cache_manager, @domis86_translator.message_verifier, %domis86_translator.managed_locales%]
+
+    domis86_translator.message_verifier:
+        public: false
+        class: Domis86\TranslatorBundle\Translation\NamingVerifier
         arguments:
-            - %kernel.cache_dir%/domis86translator
-            - false #%kernel.debug%
+            - %domis86_translator.managed_locales%
 
     domis86_translator.storage:
         public: false
         class: Domis86\TranslatorBundle\Storage\Storage
         arguments: [@doctrine.orm.entity_manager]
 
-    domis86_translator.web_debug_dialog:
+    domis86_translator.cache_manager:
         public: false
-        class: Domis86\TranslatorBundle\Translation\WebDebugDialog
-        arguments: [@domis86_translator.storage, @domis86_translator.message_manager, @domis86_translator.translator.parent]
+        class: Domis86\TranslatorBundle\Translation\CacheManager
+        arguments:
+            - %kernel.cache_dir%/domis86translator
+            - %kernel.debug%
 
-    domis86_translator.data_collector:
-        public: false
-        class: Domis86\TranslatorBundle\DataCollector\TranslatorDataCollector
-        arguments: [@domis86_translator.message_manager]
-        tags:
-            - { name: data_collector, template: "Domis86TranslatorBundle:DataCollector:translatorDataCollector", id: "domis86_translator_data_collector" }
 
-# listeners
+# listeners - tags set in Domis86\TranslatorBundle\DependencyInjection\Extension
 
     domis86_translator.controller_listener:
+        public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorControllerListener
         arguments: [@domis86_translator.message_manager]
         scope: request
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller, priority: 16 }
     domis86_translator.response_listener:
+        public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorResponseListener
         arguments: [@domis86_translator.message_manager, @templating, %domis86_translator.config%]
         scope: request
-        tags:
-            - { name: kernel.event_listener, event: kernel.response, priority: -64 }
     domis86_translator.command_listener:
+        public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorConsoleListener
         arguments: [@domis86_translator.message_manager]
-        tags:
-            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: 16 }
-            - { name: kernel.event_listener, event: console.terminate, method: onConsoleTerminate, priority: -64 }

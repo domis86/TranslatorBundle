@@ -3,7 +3,6 @@
 namespace Domis86\TranslatorBundle\EventListener;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Domis86\TranslatorBundle\Translation\MessageManager;
@@ -56,9 +55,8 @@ class TranslatorResponseListener
             return;
         }
 
-        // TODO: add list of ignored locations?
         $location = $this->messageManager->getLocationOfMessages();
-        if ($location->isEqualTo($this->messageManager->getLocationOfBackendAction())) {
+        if ($location->isEqualTo(MessageManager::getLocationOfBackendAction())) {
             return;
         }
 

@@ -60,9 +60,14 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
             jQuery(this).prepend(flagHtml);
         });
 
+        var tableScrollY = 300;
+        if (backendMode) {
+            tableScrollY = 480;
+        }
+
         // convert table to DataTable
         var tableWebDebugDialog = jQuery('table.domis86_web_debug_dialog_table').dataTable({
-            "sScrollY": "300px",
+            "sScrollY": tableScrollY + 'px',
             "bPaginate": false,
             "bScrollCollapse": false,
             "aaSorting": [ [1,'asc'], [2,'asc'] ]
@@ -99,10 +104,10 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
                 cancel: 'Cancel',
                 submit: 'OK',
                 indicator: 'saving...',
-                tooltip: 'Click to edit translation in database', // TODO: better tooltip and placeholder
+                tooltip: 'Click to edit translation in database',
                 placeholder: '( Click to edit )',
                 name: 'message_translation',
-                onblur: null // TODO: decide what to do on blur (maybe allow user to select if onblur saves or cancels and store this option in cookie/session/db?
+                onblur: null
                 //        onblur : function() {
                 //            var onblur_this = this;
                 //            jQuery( "#domis86_web_debug_dialog_confirm_blur" ).dialog({
@@ -123,6 +128,21 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
                 //        }
             }
         );
+
+//        var tooltip = {
+//            show: {
+//                delay: 200
+//            },
+//            content: function(callback) {
+//                callback($(this).prop('title').replace(/\|/g, '<br />'));
+//            },
+//            close: function( event, ui ) {
+//                jQuery(".ui-tooltip").remove();
+//            }
+//        };
+//
+//        // add tooltips
+//        tableWebDebugDialog.find('.column_locations').tooltip(tooltip);
     }
 
 

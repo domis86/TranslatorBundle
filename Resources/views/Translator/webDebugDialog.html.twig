@@ -33,6 +33,14 @@
         width: 10%;
     }
 
+    .column_locations {
+        width: 2%;
+    }
+
+    th.column_locations {
+        font-size: 10px;
+    }
+
     #domis86_web_debug_dialog_container {
         font-size: 11px;
     }
@@ -43,6 +51,9 @@
 
     .ui-dialog-title {
         font-size: 0.8em;
+    }
+
+    .ui-tooltip {
     }
 </style>
 
@@ -63,6 +74,9 @@
             {% for a_locale in webDebugDialog.managedLocales %}
                 <th class="column_translation add_flag" data-locale="{{ a_locale }}">Translation&nbsp;{{ a_locale|upper }}</th>
             {% endfor %}
+            {% if backendMode %}
+                <th class="column_locations">Locations</th>
+            {% endif %}
         </tr>
         </thead>
 
@@ -80,9 +94,14 @@
                         data-message_translation_locale="{{ aLocale }}">
                         <div class="messageTranslationContainer isContainer {% if aTranslation|length < 1 %}empty{% else %}not_empty{% endif %}">{{ aTranslation }}</div>
                         <div class="messageParentTranslationContainer isContainer {% if aMessage.parentTranslations[aLocale]|length < 1 %}empty{% else %}not_empty{% endif %}"
-                             title="Translation from original Translator service - used when there is no translation in database">{{ aMessage.parentTranslations[aLocale] }}</div>
+                             title="Translation from original Translator service.
+Used when there is no translation in database.">{{ aMessage.parentTranslations[aLocale] }}</div>
                     </td>
                 {% endfor %}
+                {% if backendMode %}
+                    <td class="column_locations" title="{% for aLocation in aMessage.locations %}{{ aLocation }}{% if not loop.last %},
+{% endif %}{% endfor %}">{{ aMessage.locations|length }}</td>
+                {% endif %}
             </tr>
         {% endfor %}
 
@@ -110,5 +129,4 @@
     <p>
         Click on table headers to sort by column. Shift+Click for multi column sorting.
     </p>
-    {# TODO: Add used plugins/bundles info (dataTables etc). Add help for usage of dataTables? #}
 </div>

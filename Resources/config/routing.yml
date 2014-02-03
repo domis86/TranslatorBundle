@@ -1,16 +1,7 @@
 domis86_translator_translator_backend:
     path: /backend
-    defaults:     { _controller: domis86_translator.controller.translator_controller:backendAction }
+    defaults: { _controller: domis86_translator.controller.translator_controller:backendAction }
 
 domis86_translator_translator_save_message:
     path: /save_message
-    defaults:     { _controller: domis86_translator.controller.translator_controller:saveMessageAction }
-
-
-domis86_translator_translator_example:
-    path: /example
-    defaults:     { _controller: domis86_translator.controller.translator_controller:exampleAction }
-
-domis86_translator_translator_example2:
-    path: /example2
-    defaults:     { _controller: domis86_translator.controller.translator_controller:example2Action }
+    defaults: { _controller: domis86_translator.controller.translator_controller:saveMessageAction }

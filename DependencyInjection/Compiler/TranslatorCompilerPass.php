@@ -1,16 +1,20 @@
 <?php
 namespace Domis86\TranslatorBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Bundle\WebProfilerBundle\EventListener\WebDebugToolbarListener;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class TranslatorCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('domis86_translator.translator')) {
+            return;
+        }
+
+        if (!$container->getParameter('domis86_translator.is_enabled')) {
             return;
         }
 
@@ -29,14 +33,12 @@ class TranslatorCompilerPass implements CompilerPassInterface
         }
         $container->setAlias('translator', 'domis86_translator.translator');
 
-
-        if ($container->hasParameter('web_profiler.debug_toolbar.mode')) {
-            if ($container->getParameter('web_profiler.debug_toolbar.mode') === WebDebugToolbarListener::ENABLED) {
-                $responseListenerDefinition = $container->findDefinition('domis86_translator.response_listener');
-                $responseListenerDefinition->addMethodCall(
-                    'enableWebDebugDialog', array()
-                );
-            }
-        }
+        $parentTranslatorReference = new Reference('domis86_translator.translator.parent');
+        $container->getDefinition('domis86_translator.translator')->addMethodCall(
+            'setParentTranslator', array($parentTranslatorReference)
+        );
+        $container->getDefinition('domis86_translator.web_debug_dialog')->addMethodCall(
+            'setParentTranslator', array($parentTranslatorReference)
+        );
     }
 }
