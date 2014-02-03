@@ -1,5 +1,5 @@
 # domis86/TranslatorBundle
-
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/1b5d278f-6fd5-4cc0-a81b-6223bad63fc4/small.png)](https://insight.sensiolabs.com/projects/1b5d278f-6fd5-4cc0-a81b-6223bad63fc4)
 ## What is it ?
 
 Symfony2 bundle which helps in translation.
@@ -113,3 +113,5 @@ domis86_translator:
 * [DataTables](http://datatables.net/)
 * [Jeditable](http://www.appelsiini.net/projects/jeditable)
 * [yepnope.js](http://yepnopejs.com/)
+
+[![Latest Stable Version](https://poser.pugx.org/domis86/translator-bundle/v/stable.png)](https://packagist.org/packages/domis86/translator-bundle) [![Total Downloads](https://poser.pugx.org/domis86/translator-bundle/downloads.png)](https://packagist.org/packages/domis86/translator-bundle) [![Latest Unstable Version](https://poser.pugx.org/domis86/translator-bundle/v/unstable.png)](https://packagist.org/packages/domis86/translator-bundle) [![License](https://poser.pugx.org/domis86/translator-bundle/license.png)](https://packagist.org/packages/domis86/translator-bundle)

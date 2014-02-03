@@ -1,7 +1,7 @@
 {
     "name": "domis86/translator-bundle",
     "type": "symfony-bundle",
-    "description": "Translator bundle for use with Symfony2",
+    "description": "Easily edit Symfony2 translations while browsing your site",
     "keywords": ["translator", "translations", "i18n", "ui", "bundle"],
     "homepage": "http://github.com/domis86/TranslatorBundle",
     "license": "WTFPL",
