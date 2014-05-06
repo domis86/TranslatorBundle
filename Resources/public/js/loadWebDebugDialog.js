@@ -26,11 +26,11 @@ function Domis86WebDebugDialogLoaderClass() {
 
         // Now we load libraries if necessary
         // They are loaded asynchronously, so its potentially faster than loading "one after another"
-		// TODO: install yepnope.js css plugin ('css!' prefix)
+
         that.isJQueryUILoaded = (typeof jQuery.ui !== 'undefined');
         yepnope({
             test: that.isJQueryUILoaded,
-            nope: ['css!' + dataContainer.data('jquery-ui_url_1'), dataContainer.data('jquery-ui_url_2')],
+            nope: that.yepnopeAssetUrls([dataContainer.data('jquery-ui_url_1'), dataContainer.data('jquery-ui_url_2')]),
             complete: function () {
                 that.isJQueryUILoaded = true;
                 consoleLog('jQueryUI loaded!');
@@ -40,7 +40,7 @@ function Domis86WebDebugDialogLoaderClass() {
         that.isDataTablesLoaded = (typeof jQuery.fn.DataTable !== 'undefined');
         yepnope({
             test: that.isDataTablesLoaded,
-            nope: ['css!' + dataContainer.data('datatables_url_1'), dataContainer.data('datatables_url_2')],
+            nope: that.yepnopeAssetUrls([dataContainer.data('datatables_url_1'), dataContainer.data('datatables_url_2')]),
             complete: function () {
                 that.isDataTablesLoaded = true;
                 consoleLog('DataTables loaded!');
@@ -50,7 +50,7 @@ function Domis86WebDebugDialogLoaderClass() {
         that.isJeditableLoaded = (typeof jQuery.fn.editable !== 'undefined');
         yepnope({
             test: that.isJeditableLoaded,
-            nope: [dataContainer.data('jeditable_url_1')],
+            nope: that.yepnopeAssetUrls([dataContainer.data('jeditable_url_1')]),
             complete: function () {
                 that.isJeditableLoaded = true;
                 consoleLog('Jeditable loaded!!');
@@ -59,7 +59,7 @@ function Domis86WebDebugDialogLoaderClass() {
 
         yepnope({
             test: false,
-            nope: [dataContainer.data('domis86_webdebugdialog_url_1')],
+            nope: that.yepnopeAssetUrls([dataContainer.data('domis86_webdebugdialog_url_1')]),
             complete: function () {
                 consoleLog('webDebugDialog.js loaded!!');
                 that.tryToInitDialog();
@@ -92,6 +92,23 @@ function Domis86WebDebugDialogLoaderClass() {
 
         return isToolbarLoaded || that.backendMode;
     }
+    
+    this.yepnopeAssetUrl = function (path) {
+        var extension = path.substr(path.length-3, path.length);
+        var prefix = '';
+        if (extension==='css' || path.indexOf(".css?")!==-1) {
+            var prefix = 'css!';
+        }
+        return prefix + path;
+    };
+    this.yepnopeAssetUrls = function (paths) {
+        var assetUrls = [];
+        var length = paths.length;
+        for (var i=0; i<length; i++) {
+            assetUrls.push( this.yepnopeAssetUrl(paths[i]) );
+        }
+        return assetUrls;
+    };
 }
 
 includeYepnopeJs();
