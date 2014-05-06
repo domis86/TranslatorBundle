@@ -5,6 +5,7 @@ namespace Domis86\TranslatorBundle\EventListener;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernel;
 use Domis86\TranslatorBundle\Translation\MessageManager;
 
 /**
@@ -35,7 +36,7 @@ class TranslatorResponseListener
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if (HttpKernel::MASTER_REQUEST != $event->getRequestType()) {
             return;
         }
 
