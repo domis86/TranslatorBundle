@@ -55,7 +55,6 @@ services:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorControllerListener
         arguments: [@domis86_translator.message_manager]
-        scope: request
     domis86_translator.response_listener:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorResponseListener
