@@ -2,6 +2,7 @@
 namespace Domis86\TranslatorBundle\Translation;
 
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\Finder\Finder;
 
 /**
  * CacheManager
@@ -12,17 +13,22 @@ class CacheManager
 {
     /** @var string */
     private $cacheDir;
+    
+    /** @var string */
+    private $kernelRootDir;
 
     /** @var bool */
     private $debug;
 
     /**
      * @param string $cacheDir
+     * @param string $kernelRootDir
      * @param bool $debug
      */
-    public function __construct($cacheDir, $debug)
+    public function __construct($cacheDir, $kernelRootDir, $debug)
     {
         $this->cacheDir = $cacheDir;
+        $this->kernelRootDir = $kernelRootDir;
         $this->debug = $debug;
     }
 
@@ -58,6 +64,30 @@ return ' . var_export($messageCollection->export(), true) . ';
 ';
         $cache->write($content);
         $messageCollection->setModified(false);
+    }
+
+    /**
+     * @return array
+     */
+    public function clearCache()
+    {
+        $dirs = array();
+        $dirs[] = $this->cacheDir.'/../../*/domis86translator'; // for all environments
+
+        $finder = Finder::create()
+            ->files()
+//            ->filter(function (\SplFileInfo $file) {
+//                return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
+//            })
+            ->in($dirs)
+        ;
+
+        $deletedFiles = [];
+        foreach ($finder as $file) {
+            $deletedFiles[] = $file->getRealpath();
+            unlink($file->getRealpath());
+        }
+        return $deletedFiles;
     }
 
     /**

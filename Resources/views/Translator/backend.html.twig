@@ -3,8 +3,14 @@
 {% block title %}Edit All Messages - Backend - Domis86TranslatorBundle - {% endblock %}
 
 {% block content %}
-    <div class="domis86_translator_data_collector_icon_text domis86_translator_data_collector_clickable"
-         style="font-size: 1.2em;">translations
+    <div style="float: left; clear: both; width: 100%;">
+        <div class="domis86_translator_data_collector_icon_text domis86_translator_data_collector_clickable" style="font-size: 1.2em; float: left; clear: both; height: 1.5em; width: 100%; background-color: green;">
+            translations
+        </div>
+        
+        <div class="domis86_translator_backend_clear_cache" style="font-size: 1.2em; float: left; clear: both; height: 1.5em; width: 100%;  background-color: white;">
+            <a href="{{ path('domis86_translator_translator_backend_clear_cache') }}" onclick="return confirm('Are you sure you want to clear cache for prod and dev envs?');">Clear Translations cache</a>
+        </div>
     </div>
 
     {% include 'Domis86TranslatorBundle:Translator:webDebugDialog.html.twig' %}

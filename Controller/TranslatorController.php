@@ -79,5 +79,21 @@ class TranslatorController
             )
         );
     }
+    
+    /**
+     * @return Response
+     */
+    public function clearCacheAction()
+    {
+        if (!$this->bundleConfig['is_enabled']) {
+            return new Response('Domis86TranslatorBundle is not enabled in your config.yml - more info: <a href="https://github.com/domis86/TranslatorBundle">https://github.com/domis86/TranslatorBundle</a>');
+        }
 
+        return $this->templating->renderResponse(
+            'Domis86TranslatorBundle:Translator:backendClearCache.html.twig',
+            array(
+                'deletedFiles' => $this->webDebugDialog->clearCache()
+            )
+        );
+    }
 }

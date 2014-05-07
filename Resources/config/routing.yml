@@ -2,6 +2,10 @@ domis86_translator_translator_backend:
     path: /backend
     defaults: { _controller: domis86_translator.controller.translator_controller:backendAction }
 
+domis86_translator_translator_backend_clear_cache:
+    path: /backend/clearcache
+    defaults: { _controller: domis86_translator.controller.translator_controller:clearCacheAction }
+
 domis86_translator_translator_save_message:
     path: /save_message
     defaults: { _controller: domis86_translator.controller.translator_controller:saveMessageAction }

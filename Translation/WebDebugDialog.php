@@ -38,6 +38,11 @@ class WebDebugDialog
         $this->managedLocales = $managedLocales;
     }
 
+    public function clearCache()
+    {
+        return $this->cacheManager->clearCache();
+    }
+
     /**
      * @param LocationVO $location
      * @return array
