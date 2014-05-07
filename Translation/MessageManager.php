@@ -137,14 +137,19 @@ class MessageManager
         }
 
         if (!$this->messageCollection->hasMessage($messageName, $domainName)) {
-            $this->namingVerifier->verifyNames($messageName, $domainName);
-            $this->markMessageAsMissingFromCollection($messageName, $domainName);
-            $message = $this->storage->getMessage($messageName, $domainName);
-            if (!$message) {
-                $this->markMessageAsMissingFromStorage($messageName, $domainName);
+            try {
+                $this->namingVerifier->verifyNames($messageName, $domainName);
+                $this->markMessageAsMissingFromCollection($messageName, $domainName);
+                $message = $this->storage->getMessage($messageName, $domainName);
+                if (!$message) {
+                    $this->markMessageAsMissingFromStorage($messageName, $domainName);
+                    return false;
+                }
+                $this->messageCollection->addMessage($message);
+            }
+            catch (\InvalidArgumentException $e) {
                 return false;
             }
-            $this->messageCollection->addMessage($message);
         }
 
         return $this->messageCollection->getTranslationOfMessageAsString($messageName, $domainName, $locale);
