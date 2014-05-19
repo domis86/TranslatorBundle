@@ -99,6 +99,18 @@ class WebDebugDialog
     }
 
     /**
+     * @param string $messageName
+     * @param string $domainName
+     * @return string|bool
+     */
+    public function deleteMessage($messageName, $domainName)
+    {
+        $this->storage->deleteMessage($messageName, $domainName);
+        $this->cacheManager->clearCache();
+        return true;
+    }
+
+    /**
      * @param array $messages
      * @param bool $backendMode
      * @return array

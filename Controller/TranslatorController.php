@@ -46,6 +46,17 @@ class TranslatorController
         return new Response(json_encode($return), 200, array('Content-Type' => 'application/json'));
     }
 
+    public function deleteMessageAction(Request $request)
+    {
+        $this->webDebugDialog->deleteMessage(
+            $request->request->get('message_name'),
+            $request->request->get('message_domain_name')
+        );
+        $return = array();
+        $return['result'] = 'ok';
+        return new Response(json_encode($return), 200, array('Content-Type' => 'application/json'));
+    }
+
     /**
      * @param LocationVO $location
      * @return Response

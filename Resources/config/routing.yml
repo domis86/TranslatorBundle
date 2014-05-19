@@ -9,3 +9,7 @@ domis86_translator_translator_backend_clear_cache:
 domis86_translator_translator_save_message:
     path: /save_message
     defaults: { _controller: domis86_translator.controller.translator_controller:saveMessageAction }
+
+domis86_translator_translator_delete_message:
+    path: /delete_message
+    defaults: { _controller: domis86_translator.controller.translator_controller:deleteMessageAction }

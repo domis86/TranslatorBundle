@@ -35,6 +35,24 @@ class Storage implements StorageInterface
     }
 
     /**
+     * Delete Message from db
+     *
+     * @param string $messageName
+     * @param string $domainName
+     * @return bool
+     */
+    public function deleteMessage($messageName, $domainName)
+    {
+        $message = $this->getMessageRepository()->findOneByNameAndDomain($messageName, $domainName);
+        if (!$message) {
+            return false;
+        }
+        $this->entityManager->remove($message);
+        $this->entityManager->flush();
+        return true;
+    }
+
+    /**
      * @param string LocationVO $location
      * @return array
      */

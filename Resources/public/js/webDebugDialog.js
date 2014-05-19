@@ -3,6 +3,8 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
 
     var backendMode = aBackendMode;
     var assetsBasePath = aAssetsBasePath;
+    var submitUrl = jQuery('#domis86_web_debug_dialog_container').data('submit_url');
+    var deleteMessageUrl = jQuery('#domis86_web_debug_dialog_container').data('delete_message_url');
     var isInitialized = false;
     var countMessages = 0;
     var countMessagesTranslated = 0;
@@ -77,7 +79,7 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
 
         // Apply the jEditable handlers to the table
         tableWebDebugDialog.find('.messageTranslationContainer').editable(
-            jQuery('#domis86_web_debug_dialog_container').data('submit_url'),
+            submitUrl,
             {
                 "callback": function (sValue, y) {
                     var newValue = jQuery.parseJSON(sValue).value;
@@ -151,7 +153,7 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
         visibilityCheckboxes.empty();
 
         // Columns visibility checkboxes - onclick events
-        jQuery('input.column_visibility_checkbox').each(function () {
+        jQuery('#domis86_web_debug_dialog_container input.column_visibility_checkbox').each(function () {
             jQuery(this).click(function (event) {
                 var locale = $(this).data('locale');
                 if ($(this).is(':checked')) {
@@ -164,7 +166,27 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
                     });
                 }
                 // redraw table
-                tableWebDebugDialog.fnDraw(true);
+                tableWebDebugDialog.api().draw(false);
+            });
+        });
+
+        // Delete message buttons
+        jQuery('#domis86_web_debug_dialog_container .delete_message_button').each(function () {
+            jQuery(this).click(function (event) {
+                event.preventDefault();
+
+                var row = jQuery(this).closest("tr.row_message");
+                var message_name = row.data('message_name');
+                var message_domain_name = row.data('message_domain_name');
+                if (!confirm('Delete message "' + message_name + '" (domain: "' + message_domain_name + '")')) {
+                    return;
+                }
+                $.post(deleteMessageUrl, {
+                    message_name: message_name,
+                    message_domain_name: message_domain_name
+                });
+                tableWebDebugDialog.api().row(row).remove();
+                row.remove();
             });
         });
     }

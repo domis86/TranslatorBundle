@@ -73,7 +73,8 @@
      style="display:none; background-color: burlywood; width: 100%;"
      title="{{ title|raw }}"
      data-submit_url="{{ path('domis86_translator_translator_save_message')|escape }}"
-        >
+     data-delete_message_url="{{ path('domis86_translator_translator_delete_message')|escape }}"
+>
     {% endspaceless %}
 
     <table class="domis86_web_debug_dialog_table" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
@@ -94,15 +95,22 @@
         <tbody>
 
         {% for aMessage in webDebugDialog.messagesForView %}
-            <tr class="row_message">
+            <tr class="row_message"
+                data-message_name="{{ aMessage.name }}"
+                data-message_domain_name="{{ aMessage.domain_name }}"
+            >
                 <td class="column_id td_first">{{ aMessage.id }}</td>
                 <td class="column_domain_name">{{ aMessage.domain_name }}</td>
-                <td class="column_name">{{ aMessage.name }}</td>
+                <td class="column_name">
+                    <a href="#" class="delete_message_button">[X]</a>
+                    {{ aMessage.name }}
+                </td>
                 {% for aLocale, aTranslation in aMessage.translations %}
                     <td class="column_translation column_translation_{{ aLocale }} translation_font {% if loop.last %}td_last{% endif %}"
                         data-message_name="{{ aMessage.name }}"
                         data-message_domain_name="{{ aMessage.domain_name }}"
-                        data-message_translation_locale="{{ aLocale }}">
+                        data-message_translation_locale="{{ aLocale }}"
+                    >
                         <div class="messageTranslationContainer isContainer {% if aTranslation|length < 1 %}empty{% else %}not_empty{% endif %}">{{ aTranslation|raw }}</div>
                         <div class="messageParentTranslationContainer isContainer {% if aMessage.parentTranslations[aLocale]|length < 1 %}empty{% else %}not_empty{% endif %}"
                              title="Translation from original Translator service.
