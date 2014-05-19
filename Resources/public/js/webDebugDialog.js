@@ -7,6 +7,8 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
     var countMessages = 0;
     var countMessagesTranslated = 0;
 
+    var tableWebDebugDialog = false;
+
     this.prepare = function () {
         updateTranslatorDataCollectorIconText();
 
@@ -66,7 +68,7 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
         }
 
         // convert table to DataTable
-        var tableWebDebugDialog = jQuery('table.domis86_web_debug_dialog_table').dataTable({
+        tableWebDebugDialog = jQuery('table.domis86_web_debug_dialog_table').dataTable({
             "sScrollY": tableScrollY + 'px',
             "bPaginate": false,
             "bScrollCollapse": false,
@@ -143,6 +145,28 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
 //
 //        // add tooltips
 //        tableWebDebugDialog.find('.column_locations').tooltip(tooltip);
+
+        var visibilityCheckboxes = $('.domis86_web_debug_dialog_column_visibility_checkboxes');
+        $('#domis86_web_debug_dialog_container div.dataTables_filter').prepend( visibilityCheckboxes.html() );
+        visibilityCheckboxes.empty();
+
+        // Columns visibility checkboxes - onclick events
+        jQuery('input.column_visibility_checkbox').each(function () {
+            jQuery(this).click(function (event) {
+                var locale = $(this).data('locale');
+                if ($(this).is(':checked')) {
+                    jQuery('.column_translation_' + locale).each(function () {
+                        jQuery(this).show();
+                    });
+                } else {
+                    jQuery('.column_translation_' + locale).each(function () {
+                        jQuery(this).hide();
+                    });
+                }
+                // redraw table
+                tableWebDebugDialog.fnDraw(true);
+            });
+        });
     }
 
 
