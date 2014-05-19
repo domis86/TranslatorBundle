@@ -12,6 +12,9 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class Translator implements TranslatorInterface
 {
+    /** @var bool */
+    private $isEnabled = false;
+
     /**
      * @var TranslatorInterface $translator
      */
@@ -33,6 +36,16 @@ class Translator implements TranslatorInterface
         $this->selector = $selector ? : new MessageSelector();
     }
 
+    public function enable()
+    {
+        $this->isEnabled = true;
+    }
+
+    public function isEnabled()
+    {
+        return $this->isEnabled;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -41,7 +54,7 @@ class Translator implements TranslatorInterface
         if (!$locale) {
             $locale = $this->getLocale();
         }
-        if ($translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
+        if ($this->isEnabled() && $translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
             if (empty($parameters)) {
                 return $translation;
             }
@@ -58,7 +71,7 @@ class Translator implements TranslatorInterface
         if (!$locale) {
             $locale = $this->getLocale();
         }
-        if ($translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
+        if ($this->isEnabled() && $translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
             $translation = $this->selector->choose($translation, (int)$number, $locale);
             if (empty($parameters)) {
                 return $translation;

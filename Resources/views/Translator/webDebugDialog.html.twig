@@ -102,7 +102,7 @@
                 <td class="column_id td_first">{{ aMessage.id }}</td>
                 <td class="column_domain_name">{{ aMessage.domain_name }}</td>
                 <td class="column_name">
-                    <a href="#" class="delete_message_button">[X]</a>
+                    <a href="#" class="delete_message_button" title="Delete Message">[X]</a>
                     {{ aMessage.name }}
                 </td>
                 {% for aLocale, aTranslation in aMessage.translations %}

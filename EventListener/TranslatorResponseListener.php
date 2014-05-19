@@ -2,6 +2,7 @@
 
 namespace Domis86\TranslatorBundle\EventListener;
 
+use Domis86\TranslatorBundle\Translation\Translator;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -27,16 +28,20 @@ class TranslatorResponseListener
     /** @var array */
     private $bundleConfig = array();
 
-    public function __construct(MessageManager $messageManager, EngineInterface $templating, array $bundleConfig)
+    /** @var Translator */
+    private $translator;
+
+    public function __construct(MessageManager $messageManager, EngineInterface $templating, array $bundleConfig, Translator $translator)
     {
         $this->messageManager = $messageManager;
         $this->templating = $templating;
         $this->bundleConfig = $bundleConfig;
+        $this->translator = $translator;
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (HttpKernel::MASTER_REQUEST != $event->getRequestType()) {
+        if (!$this->translator->isEnabled() || HttpKernel::MASTER_REQUEST != $event->getRequestType()) {
             return;
         }
 
