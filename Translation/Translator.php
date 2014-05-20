@@ -30,10 +30,16 @@ class Translator implements TranslatorInterface
      */
     private $selector;
 
-    public function __construct(MessageManager $messageManager, MessageSelector $selector = null)
+    /**
+     * @var array
+     */
+    private $ignoredDomains;
+
+    public function __construct(MessageManager $messageManager, MessageSelector $selector = null, $ignoredDomains = array())
     {
         $this->messageManager = $messageManager;
         $this->selector = $selector ? : new MessageSelector();
+        $this->ignoredDomains = $ignoredDomains;
     }
 
     public function enable()
@@ -54,7 +60,7 @@ class Translator implements TranslatorInterface
         if (!$locale) {
             $locale = $this->getLocale();
         }
-        if ($this->isEnabled() && $translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
+        if ($this->isEnabled() && !$this->isIgnoredDomain($domain) && $translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
             if (empty($parameters)) {
                 return $translation;
             }
@@ -71,7 +77,7 @@ class Translator implements TranslatorInterface
         if (!$locale) {
             $locale = $this->getLocale();
         }
-        if ($this->isEnabled() && $translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
+        if ($this->isEnabled() && !$this->isIgnoredDomain($domain) && $translation = $this->messageManager->translateMessage($id, $domain, $locale)) {
             $translation = $this->selector->choose($translation, (int)$number, $locale);
             if (empty($parameters)) {
                 return $translation;
@@ -100,7 +106,17 @@ class Translator implements TranslatorInterface
     /**
      * @param TranslatorInterface $parentTranslator
      */
-    public function setParentTranslator(TranslatorInterface $parentTranslator) {
+    public function setParentTranslator(TranslatorInterface $parentTranslator)
+    {
         $this->parentTranslator = $parentTranslator;
+    }
+
+    /**
+     * @param string $domain
+     * @return bool
+     */
+    private function isIgnoredDomain($domain)
+    {
+        return in_array($domain, $this->ignoredDomains);
     }
 }

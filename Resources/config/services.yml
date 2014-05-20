@@ -9,7 +9,7 @@ services:
 
     domis86_translator.translator:
         class: '%domis86_translator.translator.class%'
-        arguments: [@domis86_translator.message_manager, @translator.selector]
+        arguments: [@domis86_translator.message_manager, @translator.selector, %domis86_translator.ignored_domains%]
 
     domis86_translator.controller.translator_controller:
         class: '%domis86_translator.controller.translator_controller.class%'
