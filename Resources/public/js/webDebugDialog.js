@@ -35,6 +35,9 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
 
     this.showDomis86WebDebugDialog = function () {
         if (!backendMode) {
+            var dialogHeight = $(window).height() - 70;
+            //var $div = $('div.navbar');
+
             jQuery("#domis86_web_debug_dialog_container").dialog({
                 modal: true,
                 autoOpen: true,
@@ -46,8 +49,13 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
                         jQuery(this).dialog("close");
                     }
                 },
-                width: 1200,
-                height: 500
+                width: '100%',
+                height: dialogHeight
+//                ,position: {
+//                    my: "left top",
+//                    at: "left bottom",
+//                    of: $div
+//                }
             });
         }
 
@@ -64,18 +72,17 @@ function Domis86WebDebugDialogClass(aBackendMode, aAssetsBasePath) {
             jQuery(this).prepend(flagHtml);
         });
 
-        var tableScrollY = 300;
-        if (backendMode) {
-            tableScrollY = 480;
-        }
-
-        // convert table to DataTable
-        tableWebDebugDialog = jQuery('table.domis86_web_debug_dialog_table').dataTable({
-            "sScrollY": tableScrollY + 'px',
+        var dataTableOptions = {
             "bPaginate": false,
             "bScrollCollapse": false,
             "aaSorting": [ [1,'asc'], [2,'asc'] ]
-        });
+        };
+        if (!backendMode) {
+            dataTableOptions.sScrollY = ($(window).height() - 230) + 'px';
+        }
+
+        // convert table to DataTable
+        tableWebDebugDialog = jQuery('table.domis86_web_debug_dialog_table').dataTable(dataTableOptions);
 
         // Apply the jEditable handlers to the table
         tableWebDebugDialog.find('.messageTranslationContainer').editable(
