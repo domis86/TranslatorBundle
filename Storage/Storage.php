@@ -35,7 +35,7 @@ class Storage implements StorageInterface
     }
 
     /**
-     * Delete Message from db
+     * Delete Message from db by name/domain name
      *
      * @param string $messageName
      * @param string $domainName
@@ -53,6 +53,21 @@ class Storage implements StorageInterface
     }
 
     /**
+     * Delete Messages from db
+     *
+     * @param Message[] $messagesForDelete
+     * @return bool
+     */
+    public function deleteMessages($messagesForDelete)
+    {
+        foreach ($messagesForDelete as $message) {
+            $this->entityManager->remove($message);
+        }
+        $this->entityManager->flush();
+        return true;
+    }
+
+    /**
      * @param string LocationVO $location
      * @return array
      */
@@ -62,7 +77,7 @@ class Storage implements StorageInterface
     }
 
     /**
-     * @return array
+     * @return Message[]
      */
     public function loadAllMessages()
     {
@@ -210,5 +225,6 @@ class Storage implements StorageInterface
     {
         return $this->entityManager->getRepository("Domis86TranslatorBundle:Domain");
     }
+
 
 }

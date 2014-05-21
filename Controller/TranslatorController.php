@@ -29,6 +29,9 @@ class TranslatorController
 
     public function saveMessageAction(Request $request)
     {
+        if (!$this->bundleConfig['is_enabled']) {
+            $this->bundleNotEnabledMessage();
+        }
         $messageTranslation = $this->webDebugDialog->saveMessageTranslation(
             $request->request->get('message_name'),
             $request->request->get('message_domain_name'),
@@ -48,6 +51,9 @@ class TranslatorController
 
     public function deleteMessageAction(Request $request)
     {
+        if (!$this->bundleConfig['is_enabled']) {
+            $this->bundleNotEnabledMessage();
+        }
         $this->webDebugDialog->deleteMessage(
             $request->request->get('message_name'),
             $request->request->get('message_domain_name')
@@ -63,6 +69,9 @@ class TranslatorController
      */
     public function webDebugDialogAction(LocationVO $location)
     {
+        if (!$this->bundleConfig['is_enabled']) {
+            $this->bundleNotEnabledMessage();
+        }
         return $this->templating->renderResponse(
             'Domis86TranslatorBundle:Translator:webDebugDialog.html.twig',
             array(
@@ -79,10 +88,10 @@ class TranslatorController
     public function backendAction()
     {
         if (!$this->bundleConfig['is_enabled']) {
-            return new Response('Domis86TranslatorBundle is not enabled in your config.yml - more info: <a href="https://github.com/domis86/TranslatorBundle">https://github.com/domis86/TranslatorBundle</a>');
+            $this->bundleNotEnabledMessage();
         }
         return $this->templating->renderResponse(
-            'Domis86TranslatorBundle:Translator:backend.html.twig',
+            'Domis86TranslatorBundle:Translator/Backend:backend.html.twig',
             array(
                 'webDebugDialog' => $this->webDebugDialog->getDataForBackend(),
                 'backendMode' => true,
@@ -97,14 +106,39 @@ class TranslatorController
     public function clearCacheAction()
     {
         if (!$this->bundleConfig['is_enabled']) {
-            return new Response('Domis86TranslatorBundle is not enabled in your config.yml - more info: <a href="https://github.com/domis86/TranslatorBundle">https://github.com/domis86/TranslatorBundle</a>');
+            $this->bundleNotEnabledMessage();
         }
-
+        $deletedFiles = $this->webDebugDialog->clearCache();
         return $this->templating->renderResponse(
-            'Domis86TranslatorBundle:Translator:backendClearCache.html.twig',
+            'Domis86TranslatorBundle:Translator/Backend:clearCache.html.twig',
             array(
-                'deletedFiles' => $this->webDebugDialog->clearCache()
+                'deletedFiles' => $deletedFiles
             )
         );
+    }
+
+    /**
+     * @return Response
+     */
+    public function clearUntranslatedMessagesAction()
+    {
+        if (!$this->bundleConfig['is_enabled']) {
+            $this->bundleNotEnabledMessage();
+        }
+        $deletedMessages = $this->webDebugDialog->clearUntranslatedMessages();
+        return $this->templating->renderResponse(
+            'Domis86TranslatorBundle:Translator/Backend:clearUntranslatedMessages.html.twig',
+            array(
+                'deletedMessages' => $deletedMessages
+            )
+        );
+    }
+
+    /**
+     * @return Response
+     */
+    private function bundleNotEnabledMessage()
+    {
+        return new Response('Domis86TranslatorBundle is not enabled in your config.yml - more info: <a href="https://github.com/domis86/TranslatorBundle">https://github.com/domis86/TranslatorBundle</a>');
     }
 }

@@ -1,0 +1,21 @@
+{% extends 'Domis86TranslatorBundle::base.html.twig' %}
+
+{% block title %}Clear Untranslated Messages - Backend - Domis86TranslatorBundle - {% endblock %}
+
+{% block content %}
+    <p>
+        deleted Messages:
+    </p>
+    <ul>
+    {% for deletedMessage in deletedMessages %}
+        <li>{{ deletedMessage }}</li>
+    {% else %}
+        <li>no Messages deleted</li>
+    {% endfor %}
+    </ul>
+    <div style="float: left; clear: both; width: 100%;">
+        <div style="font-size: 1.2em; float: left; clear: both; height: 1.5em; width: 100%; background-color: green;">
+            <a href="{{ path('domis86_translator_translator_backend') }}">Untranslated Messages cleared! - go back to Edit</a>
+        </div>
+    </div>
+{% endblock %}

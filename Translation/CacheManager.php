@@ -3,6 +3,7 @@ namespace Domis86\TranslatorBundle\Translation;
 
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * CacheManager
@@ -67,22 +68,28 @@ return ' . var_export($messageCollection->export(), true) . ';
     }
 
     /**
-     * @return array
+     * @return array List of deleted files
      */
     public function clearCache()
     {
         $dirs = array();
         $dirs[] = $this->cacheDir.'/../../*/domis86translator'; // for all environments
 
-        $finder = Finder::create()
-            ->files()
-//            ->filter(function (\SplFileInfo $file) {
-//                return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
-//            })
-            ->in($dirs)
+        $finder = array();
+        try {
+            $finder = Finder::create()
+                ->files()
+    //            ->filter(function (\SplFileInfo $file) {
+    //                return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
+    //            })
+                ->in($dirs)
         ;
+        } catch (\InvalidArgumentException $e) {
+            // cache dir was empty
+        }
 
         $deletedFiles = [];
+        /** @var SplFileInfo[] $finder */
         foreach ($finder as $file) {
             $deletedFiles[] = $file->getRealpath();
             unlink($file->getRealpath());

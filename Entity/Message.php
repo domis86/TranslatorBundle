@@ -62,11 +62,13 @@ class Message
     protected $domain;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="MessageTranslation", mappedBy="message")
      */
     protected $translations;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="MessageLocation", mappedBy="message")
      */
     protected $messageLocations;
@@ -109,7 +111,7 @@ class Message
      * Set name
      *
      * @param string $name
-     * @return \Domis86\TranslatorBundle\Entity\Message
+     * @return Message
      */
     public function setName($name)
     {
@@ -131,7 +133,7 @@ class Message
      * Set created_at
      *
      * @param \DateTime $createdAt
-     * @return \Domis86\TranslatorBundle\Entity\Message
+     * @return Message
      */
     public function setCreatedAt($createdAt)
     {
@@ -153,7 +155,7 @@ class Message
      * Set updated_at
      *
      * @param \DateTime $updatedAt
-     * @return \Domis86\TranslatorBundle\Entity\Message
+     * @return Message
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -175,7 +177,7 @@ class Message
      * Add translation
      *
      * @param MessageTranslation $translation
-     * @return \Domis86\TranslatorBundle\Entity\Message
+     * @return Message
      */
     public function addTranslation(MessageTranslation $translation)
     {
@@ -196,7 +198,7 @@ class Message
     /**
      * Get translations
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getTranslations()
     {
@@ -224,7 +226,7 @@ class Message
      * Set domain_id
      *
      * @param integer $domainId
-     * @return \Domis86\TranslatorBundle\Entity\Message
+     * @return Message
      */
     public function setDomainId($domainId)
     {
@@ -246,7 +248,7 @@ class Message
      * Set domain
      *
      * @param Domain $domain
-     * @return \Domis86\TranslatorBundle\Entity\Message
+     * @return Message
      */
     public function setDomain(Domain $domain = null)
     {

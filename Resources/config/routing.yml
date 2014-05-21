@@ -1,3 +1,11 @@
+domis86_translator_translator_save_message:
+    path: /save_message
+    defaults: { _controller: domis86_translator.controller.translator_controller:saveMessageAction }
+
+domis86_translator_translator_delete_message:
+    path: /delete_message
+    defaults: { _controller: domis86_translator.controller.translator_controller:deleteMessageAction }
+
 domis86_translator_translator_backend:
     path: /backend
     defaults: { _controller: domis86_translator.controller.translator_controller:backendAction }
@@ -6,10 +14,6 @@ domis86_translator_translator_backend_clear_cache:
     path: /backend/clearcache
     defaults: { _controller: domis86_translator.controller.translator_controller:clearCacheAction }
 
-domis86_translator_translator_save_message:
-    path: /save_message
-    defaults: { _controller: domis86_translator.controller.translator_controller:saveMessageAction }
-
-domis86_translator_translator_delete_message:
-    path: /delete_message
-    defaults: { _controller: domis86_translator.controller.translator_controller:deleteMessageAction }
+domis86_translator_translator_backend_clear_untranslated_messages:
+    path: /backend/clear_untranslated_messages
+    defaults: { _controller: domis86_translator.controller.translator_controller:clearUntranslatedMessagesAction }
