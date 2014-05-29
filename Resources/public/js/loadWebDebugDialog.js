@@ -82,6 +82,8 @@ function Domis86WebDebugDialogLoaderClass() {
     };
 
     function requirementsAreLoaded() {
+        if (typeof Domis86WebDebugDialogClass == 'undefined') { return false; }
+
         var assetsLoaded = that.isJQueryUILoaded && that.isDataTablesLoaded && that.isJeditableLoaded;
         if (!assetsLoaded) { return false; }
 
