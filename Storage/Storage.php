@@ -203,6 +203,14 @@ class Storage implements StorageInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isWritable()
+    {
+        return $this->entityManager->isOpen();
+    }
+
+    /**
      * @return array
      */
     private function getAllDomainsAsArray()

@@ -102,6 +102,9 @@ class MessageManager
      */
     public function handleMissingObjects()
     {
+        if (!$this->storage->isWritable()) {
+            return;
+        }
         if (!empty($this->missingMessagesFromCollectionList)) {
             $this->storage->addMissingDomains(array_keys($this->missingMessagesFromStorageList));
             $this->storage->addMissingMessages($this->missingMessagesFromStorageList);
