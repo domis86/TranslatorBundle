@@ -21,7 +21,10 @@ class Storage implements StorageInterface
 
     public function __construct(EntityManager $entityManager)
     {
-        $this->entityManager = $entityManager;
+        $this->entityManager = EntityManager::create(
+            $entityManager->getConnection(),
+            $entityManager->getConfiguration()
+        );
     }
 
     /**

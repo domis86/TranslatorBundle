@@ -14,22 +14,17 @@ class CacheManager
 {
     /** @var string */
     private $cacheDir;
-    
-    /** @var string */
-    private $kernelRootDir;
 
     /** @var bool */
     private $debug;
 
     /**
      * @param string $cacheDir
-     * @param string $kernelRootDir
      * @param bool $debug
      */
-    public function __construct($cacheDir, $kernelRootDir, $debug)
+    public function __construct($cacheDir, $debug)
     {
         $this->cacheDir = $cacheDir;
-        $this->kernelRootDir = $kernelRootDir;
         $this->debug = $debug;
     }
 
@@ -79,9 +74,7 @@ return ' . var_export($messageCollection->export(), true) . ';
         try {
             $finder = Finder::create()
                 ->files()
-    //            ->filter(function (\SplFileInfo $file) {
-    //                return 2 === substr_count($file->getBasename(), '.') && preg_match('/\.\w+$/', $file->getBasename());
-    //            })
+                ->files()
                 ->in($dirs)
         ;
         } catch (\InvalidArgumentException $e) {

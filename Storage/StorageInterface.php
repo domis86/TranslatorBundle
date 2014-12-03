@@ -23,5 +23,4 @@ interface StorageInterface
      */
     public function addMissingDomains($missingDomainNames = array());
 
-
 }

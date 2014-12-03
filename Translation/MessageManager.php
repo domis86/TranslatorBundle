@@ -12,7 +12,6 @@ class MessageManager
 {
     private $missingMessagesFromCollectionList = array(); // domain_name => message_name
     private $missingMessagesFromStorageList = array();    // domain_name => message_name
-    private $usedMessagesList = array();                  // domain_name => message_name
 
     /**
      * @var LocationVO $locationOfMessages Location of Messages in current request
@@ -130,8 +129,6 @@ class MessageManager
         // abort if Message doesn't exists in Storage
         if (isset($this->missingMessagesFromStorageList[$domainName][$messageName])) return false;
 
-        $this->markMessageAsUsed($messageName, $domainName);
-
         if (!$this->messageCollection) {
             $this->messageCollection = $this->cacheManager->loadMessageCollectionForLocation($this->locationOfMessages);
             if (!$this->messageCollection) {
@@ -156,16 +153,6 @@ class MessageManager
         }
 
         return $this->messageCollection->getTranslationOfMessageAsString($messageName, $domainName, $locale);
-    }
-
-    /**
-     * Mark that this Message has been used in current Location
-     * @param string $messageName
-     * @param string $domainName
-     */
-    private function markMessageAsUsed($messageName, $domainName)
-    {
-        $this->usedMessagesList[$domainName][$messageName] = true;
     }
 
     /**

@@ -46,7 +46,6 @@ services:
         class: Domis86\TranslatorBundle\Translation\CacheManager
         arguments:
             - %kernel.cache_dir%/domis86translator
-            - %kernel.root_dir%
             - %kernel.debug%
 
 
