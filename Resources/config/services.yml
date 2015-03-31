@@ -54,7 +54,7 @@ services:
     domis86_translator.controller_listener:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorControllerListener
-        arguments: [@domis86_translator.message_manager, @translator, %domis86_translator.ignored_controllers_regexes%]
+        arguments: [@domis86_translator.message_manager, @translator, %domis86_translator.whitelisted_controllers_regexes%, %domis86_translator.ignored_controllers_regexes%]
     domis86_translator.response_listener:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorResponseListener
@@ -63,4 +63,4 @@ services:
     domis86_translator.command_listener:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorConsoleListener
-        arguments: [@domis86_translator.message_manager, @translator, %domis86_translator.ignored_controllers_regexes%]
+        arguments: [@domis86_translator.message_manager, @translator, %domis86_translator.whitelisted_controllers_regexes%, %domis86_translator.ignored_controllers_regexes%]

@@ -25,12 +25,16 @@ class TranslatorControllerListener
     private $translator;
 
     /** @var array */
+    private $whitelistedControllersRegexes;
+
+    /** @var array */
     private $ignoredControllersRegexes;
 
-    public function __construct(MessageManager $messageManager, Translator $translator, $ignoredControllersRegexes)
+    public function __construct(MessageManager $messageManager, Translator $translator, $whitelistedControllersRegexes, $ignoredControllersRegexes)
     {
         $this->messageManager = $messageManager;
         $this->translator = $translator;
+        $this->whitelistedControllersRegexes = $whitelistedControllersRegexes;
         $this->ignoredControllersRegexes = $ignoredControllersRegexes;
     }
 
@@ -59,7 +63,7 @@ class TranslatorControllerListener
             }
         }
 
-        if ($this->isIgnored($controllerClassName . '::' . $actionName)) {
+        if (self::isIgnored($controllerClassName, $actionName, $this->whitelistedControllersRegexes, $this->ignoredControllersRegexes)) {
             return;
         }
 
@@ -68,10 +72,23 @@ class TranslatorControllerListener
         $this->translator->enable();
     }
 
-    private function isIgnored($className)
+    /**
+     * @param string $className
+     * @param string $actionName
+     * @param array $whitelistedControllersRegexes
+     * @param array $ignoredControllersRegexes
+     * @return bool
+     */
+    public static function isIgnored($className, $actionName, $whitelistedControllersRegexes, $ignoredControllersRegexes)
     {
-        foreach ($this->ignoredControllersRegexes as $regex) {
-            if (preg_match($regex, $className, $matches)) {
+        $classAndAction = $className . '::' . $actionName;
+        foreach ($whitelistedControllersRegexes as $regex) {
+            if (preg_match($regex, $classAndAction, $matches)) {
+                return false;
+            }
+        }
+        foreach ($ignoredControllersRegexes as $regex) {
+            if (preg_match($regex, $classAndAction, $matches)) {
                 return true;
             }
         }

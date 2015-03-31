@@ -56,6 +56,7 @@ class Extension extends BaseExtension
         $container->setParameter($this->getAlias() . '.is_enabled', $is_enabled);
         $container->setParameter($this->getAlias() . '.is_web_debug_dialog_enabled', $is_web_debug_dialog_enabled);
         $container->setParameter($this->getAlias() . '.managed_locales', $config['managed_locales']);
+        $container->setParameter($this->getAlias() . '.whitelisted_controllers_regexes', $config['whitelisted_controllers_regexes']);
         $container->setParameter($this->getAlias() . '.ignored_controllers_regexes', $config['ignored_controllers_regexes']);
         $container->setParameter($this->getAlias() . '.ignored_domains', $config['ignored_domains']);
         $container->setParameter($this->getAlias() . '.assets_base_path', $config['assets_base_path']);

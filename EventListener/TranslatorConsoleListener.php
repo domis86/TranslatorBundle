@@ -23,12 +23,16 @@ class TranslatorConsoleListener
     private $translator;
 
     /** @var array */
+    private $whitelistedControllersRegexes;
+
+    /** @var array */
     private $ignoredControllersRegexes;
 
-    public function __construct(MessageManager $messageManager, Translator $translator, $ignoredControllersRegexes)
+    public function __construct(MessageManager $messageManager, Translator $translator, $whitelistedControllersRegexes, $ignoredControllersRegexes)
     {
         $this->messageManager = $messageManager;
         $this->translator = $translator;
+        $this->whitelistedControllersRegexes = $whitelistedControllersRegexes;
         $this->ignoredControllersRegexes = $ignoredControllersRegexes;
     }
 
@@ -47,7 +51,7 @@ class TranslatorConsoleListener
             $controllerName = $matches[2];
         }
 
-        if ($this->isIgnored($commandClassName . '::' . $actionName)) {
+        if (TranslatorControllerListener::isIgnored($commandClassName, $actionName, $this->whitelistedControllersRegexes, $this->ignoredControllersRegexes)) {
             return;
         }
 
@@ -64,13 +68,4 @@ class TranslatorConsoleListener
         $this->messageManager->handleMissingObjects();
     }
 
-    private function isIgnored($className)
-    {
-        foreach ($this->ignoredControllersRegexes as $regex) {
-            if (preg_match($regex, $className, $matches)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
