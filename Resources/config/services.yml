@@ -54,13 +54,13 @@ services:
     domis86_translator.controller_listener:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorControllerListener
-        arguments: [@domis86_translator.message_manager, @translator, %domis86_translator.whitelisted_controllers_regexes%, %domis86_translator.ignored_controllers_regexes%]
+        arguments: [@domis86_translator.message_manager, @domis86_translator.translator, %domis86_translator.whitelisted_controllers_regexes%, %domis86_translator.ignored_controllers_regexes%]
     domis86_translator.response_listener:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorResponseListener
-        arguments: [@domis86_translator.message_manager, @templating, %domis86_translator.config%, @translator]
+        arguments: [@domis86_translator.message_manager, @templating, %domis86_translator.config%, @domis86_translator.translator]
         scope: request
     domis86_translator.command_listener:
         public: false
         class: Domis86\TranslatorBundle\EventListener\TranslatorConsoleListener
-        arguments: [@domis86_translator.message_manager, @translator, %domis86_translator.whitelisted_controllers_regexes%, %domis86_translator.ignored_controllers_regexes%]
+        arguments: [@domis86_translator.message_manager, @domis86_translator.translator, %domis86_translator.whitelisted_controllers_regexes%, %domis86_translator.ignored_controllers_regexes%]

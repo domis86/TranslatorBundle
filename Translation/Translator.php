@@ -2,7 +2,9 @@
 
 namespace Domis86\TranslatorBundle\Translation;
 
+use Symfony\Component\Translation\MessageCatalogueInterface;
 use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\TranslatorBagInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -10,7 +12,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  *
  * @author Dominik Frankowicz <domis86@gmail.com>
  */
-class Translator implements TranslatorInterface
+class Translator implements TranslatorInterface, TranslatorBagInterface
 {
     /** @var bool */
     private $isEnabled = false;
@@ -118,5 +120,30 @@ class Translator implements TranslatorInterface
     private function isIgnoredDomain($domain)
     {
         return in_array($domain, $this->ignoredDomains);
+    }
+
+    /**
+     * Gets the catalogue by locale.
+     *
+     * @param string|null $locale The locale or null to use the default
+     *
+     * @throws \InvalidArgumentException If the locale contains invalid characters
+     *
+     * @return MessageCatalogueInterface
+     */
+    public function getCatalogue($locale = null)
+    {
+        return $this->parentTranslator->getCatalogue($locale);
+        if (null === $locale) {
+            $locale = $this->getLocale();
+        } else {
+            //$this->assertValidLocale($locale); TODO: domis86-2.7
+        }
+
+        if (!isset($this->catalogues[$locale])) {
+            $this->loadCatalogue($locale);
+        }
+
+        return $this->catalogues[$locale];
     }
 }

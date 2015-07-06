@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Domis86\TranslatorBundle\Translation\MessageManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * TranslatorResponseListener
@@ -28,10 +29,10 @@ class TranslatorResponseListener
     /** @var array */
     private $bundleConfig = array();
 
-    /** @var Translator */
+    /** @var TranslatorInterface */
     private $translator;
 
-    public function __construct(MessageManager $messageManager, EngineInterface $templating, array $bundleConfig, Translator $translator)
+    public function __construct(MessageManager $messageManager, EngineInterface $templating, array $bundleConfig, TranslatorInterface $translator)
     {
         $this->messageManager = $messageManager;
         $this->templating = $templating;
@@ -41,7 +42,10 @@ class TranslatorResponseListener
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (!$this->translator->isEnabled() || HttpKernel::MASTER_REQUEST != $event->getRequestType()) {
+        if ((!$this->translator instanceof Translator)
+            || !$this->translator->isEnabled()
+            || HttpKernel::MASTER_REQUEST != $event->getRequestType()
+        ) {
             return;
         }
 

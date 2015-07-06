@@ -6,6 +6,7 @@ use Domis86\TranslatorBundle\Translation\Translator;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Domis86\TranslatorBundle\Translation\LocationVO;
 use Domis86\TranslatorBundle\Translation\MessageManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * TranslatorConsoleListener
@@ -19,7 +20,7 @@ class TranslatorConsoleListener
     /** @var MessageManager */
     private $messageManager;
 
-    /** @var Translator */
+    /** @var TranslatorInterface */
     private $translator;
 
     /** @var array */
@@ -28,7 +29,7 @@ class TranslatorConsoleListener
     /** @var array */
     private $ignoredControllersRegexes;
 
-    public function __construct(MessageManager $messageManager, Translator $translator, $whitelistedControllersRegexes, $ignoredControllersRegexes)
+    public function __construct(MessageManager $messageManager, TranslatorInterface $translator, $whitelistedControllersRegexes, $ignoredControllersRegexes)
     {
         $this->messageManager = $messageManager;
         $this->translator = $translator;
@@ -38,6 +39,10 @@ class TranslatorConsoleListener
 
     public function onConsoleCommand(ConsoleCommandEvent $event)
     {
+        if (!($this->translator instanceof Translator)) {
+            return;
+        }
+
         $command = $event->getCommand();
 
         $bundleName = self::LOCATION_NOT_FOUND;
@@ -62,7 +67,7 @@ class TranslatorConsoleListener
 
     public function onConsoleTerminate()
     {
-        if (!$this->translator->isEnabled()) {
+        if (!($this->translator instanceof Translator) || !$this->translator->isEnabled()) {
             return;
         }
         $this->messageManager->handleMissingObjects();

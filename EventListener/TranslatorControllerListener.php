@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Domis86\TranslatorBundle\Translation\LocationVO;
 use Domis86\TranslatorBundle\Translation\MessageManager;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * TranslatorControllerListener
@@ -21,7 +22,7 @@ class TranslatorControllerListener
      */
     private $messageManager;
 
-    /** @var Translator */
+    /** @var TranslatorInterface */
     private $translator;
 
     /** @var array */
@@ -30,7 +31,7 @@ class TranslatorControllerListener
     /** @var array */
     private $ignoredControllersRegexes;
 
-    public function __construct(MessageManager $messageManager, Translator $translator, $whitelistedControllersRegexes, $ignoredControllersRegexes)
+    public function __construct(MessageManager $messageManager, TranslatorInterface $translator, $whitelistedControllersRegexes, $ignoredControllersRegexes)
     {
         $this->messageManager = $messageManager;
         $this->translator = $translator;
@@ -40,6 +41,10 @@ class TranslatorControllerListener
 
     public function onKernelController(FilterControllerEvent $event)
     {
+        if (!($this->translator instanceof Translator)) {
+            return;
+        }
+
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
             return;
         }
