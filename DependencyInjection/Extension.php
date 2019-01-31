@@ -18,7 +18,7 @@ class Extension extends BaseExtension
     /** @var string */
     private $bundlePath = '';
 
-    function __construct($bundlePath)
+    public function __construct($bundlePath)
     {
         $this->bundlePath = $bundlePath;
     }

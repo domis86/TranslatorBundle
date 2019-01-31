@@ -40,7 +40,7 @@ class CacheManager
             return false;
         }
         $messageCollection = new MessageCollection();
-        $messageCollection->import(include $cache);
+        $messageCollection->import(include $filename);
         return $messageCollection;
     }
 
