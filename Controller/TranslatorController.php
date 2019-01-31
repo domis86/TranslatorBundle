@@ -20,7 +20,7 @@ class TranslatorController
     /** @var array */
     private $bundleConfig = array();
 
-    function __construct(EngineInterface $templating, WebDebugDialog $webDebugDialog, array $bundleConfig)
+    public function __construct(EngineInterface $templating, WebDebugDialog $webDebugDialog, array $bundleConfig)
     {
         $this->templating = $templating;
         $this->webDebugDialog = $webDebugDialog;
